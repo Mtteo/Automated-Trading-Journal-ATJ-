@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout della schermata di inserimento manuale di un trade.
+    Usiamo una ScrollView così, se aggiungiamo campi, non si rompe su schermi piccoli.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Titolo schermata -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add New Trade"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <!-- Campo asset -->
+        <EditText
+            android:id="@+id/assetEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Asset (e.g. NAS100)" />
+
+        <!-- Scelta Buy/Sell -->
+        <Spinner
+            android:id="@+id/typeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+        <!-- Data -->
+        <EditText
+            android:id="@+id/dateEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Date (e.g. 2026-04-14)" />
+
+        <!-- Sessione -->
+        <EditText
+            android:id="@+id/sessionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Session (NY, London, Asia)" />
+
+        <!-- Risultato -->
+        <EditText
+            android:id="@+id/resultInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Result (Win, Loss, BE)" />
+
+        <!-- Note -->
+        <EditText
+            android:id="@+id/notesInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Notes"
+            android:minLines="3"
+            android:gravity="top" />
+
+        <!-- Bottone salvataggio -->
+        <Button
+            android:id="@+id/saveTradeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Save Trade" />
+
+    </LinearLayout>
+</ScrollView>

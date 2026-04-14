@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout principale dell'app.
+    Contiene:
+    - titolo
+    - bottone per aggiunta manuale
+    - bottone per simulazione evento JSON
+    - RecyclerView con la lista dei trade
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Titolo schermata -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ATJ - Trading Journal"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp" />
+
+    <!-- Bottone inserimento manuale -->
+    <Button
+        android:id="@+id/addTradeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Trade" />
+
+    <!-- Bottone simulazione JSON -->
+    <Button
+        android:id="@+id/simulateTradeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Simulate Trade Event" />
+
+    <!-- Lista trade -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tradeRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
