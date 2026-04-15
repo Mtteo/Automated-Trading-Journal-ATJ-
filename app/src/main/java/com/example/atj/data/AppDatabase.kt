@@ -26,16 +26,13 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "atj_database"
                 )
-                    // ATTENZIONE:
-                    // se il modello cambia e non esiste una migration,
+                    // Se il modello cambia e non esiste una migration,
                     // Room ricrea il database da zero.
-                    // Per ora è comodo durante lo sviluppo.
                     .fallbackToDestructiveMigration()
 
                     // Per semplicità lasciamo le query nel main thread.
                     // In produzione sarebbe meglio evitarlo.
                     .allowMainThreadQueries()
-
                     .build()
 
                 INSTANCE = instance

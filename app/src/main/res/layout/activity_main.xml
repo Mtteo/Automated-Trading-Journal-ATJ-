@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Layout principale dell'app.
-    Contiene:
-    - titolo
-    - bottone per aggiunta manuale
-    - bottone per simulazione evento JSON
-    - RecyclerView con la lista dei trade
--->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainLayout"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,27 +9,70 @@
     <!-- Titolo schermata -->
     <TextView
         android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ATJ Dashboard"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Box statistiche -->
+    <LinearLayout
+        android:id="@+id/dashboardContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ATJ - Trading Journal"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingBottom="16dp" />
+        android:layout_marginTop="16dp"
+        android:background="#EEEEEE"
+        android:orientation="vertical"
+        android:padding="12dp">
 
-    <!-- Bottone inserimento manuale -->
+        <TextView
+            android:id="@+id/totalTradesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Trades: 0"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/winRateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Win Rate: 0%"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/manualTradesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Manual Trades: 0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/jsonTradesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="JSON Trades: 0"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Bottone aggiunta trade manuale -->
     <Button
         android:id="@+id/addTradeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Add Trade" />
 
-    <!-- Bottone simulazione JSON -->
+    <!-- Bottone simulazione trade JSON -->
     <Button
         android:id="@+id/simulateTradeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Simulate Trade Event" />
+        android:layout_marginTop="8dp"
+        android:text="Simulate JSON Trade" />
 
     <!-- Lista trade -->
     <androidx.recyclerview.widget.RecyclerView

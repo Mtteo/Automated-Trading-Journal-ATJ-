@@ -9,7 +9,9 @@ import android.widget.EditText
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 
-// Activity dedicata all'inserimento manuale di un nuovo trade.
+// Activity per inserire manualmente un nuovo trade.
+// Qui non salviamo direttamente nel database:
+// raccogliamo i dati e li rimandiamo alla MainActivity.
 class AddTradeActivity : AppCompatActivity() {
 
     private lateinit var assetEditText: EditText
@@ -24,7 +26,7 @@ class AddTradeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_trade)
 
-        // Collego le view del layout al codice Kotlin.
+        // Collego le view del layout
         assetEditText = findViewById(R.id.assetEditText)
         typeSpinner = findViewById(R.id.typeSpinner)
         dateEditText = findViewById(R.id.dateEditText)
@@ -33,14 +35,17 @@ class AddTradeActivity : AppCompatActivity() {
         notesInput = findViewById(R.id.notesInput)
         saveTradeButton = findViewById(R.id.saveTradeButton)
 
-        // Popolo lo spinner con le due opzioni base.
-        val types = arrayOf("Buy", "Sell")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, types)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        typeSpinner.adapter = adapter
+        // Imposto le opzioni del type spinner
+        val tradeTypes = listOf("Buy", "Sell")
+        val spinnerAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            tradeTypes
+        )
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        typeSpinner.adapter = spinnerAdapter
 
-        // Alla pressione del bottone raccogliamo i dati
-        // e li rimandiamo alla MainActivity.
+        // Al click su salva, rimandiamo i dati alla MainActivity
         saveTradeButton.setOnClickListener {
             val asset = assetEditText.text.toString().trim()
             val type = typeSpinner.selectedItem.toString()
@@ -49,20 +54,17 @@ class AddTradeActivity : AppCompatActivity() {
             val result = resultInput.text.toString().trim()
             val notes = notesInput.text.toString().trim()
 
-            // Salviamo solo se almeno asset e date sono compilati.
-            if (asset.isNotEmpty() && date.isNotEmpty()) {
-                val resultIntent = Intent().apply {
-                    putExtra("asset", asset)
-                    putExtra("type", type)
-                    putExtra("date", date)
-                    putExtra("session", session)
-                    putExtra("result", result)
-                    putExtra("notes", notes)
-                }
-
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+            val resultIntent = Intent().apply {
+                putExtra("asset", asset)
+                putExtra("type", type)
+                putExtra("date", date)
+                putExtra("session", session)
+                putExtra("result", result)
+                putExtra("notes", notes)
             }
+
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
         }
     }
 }
