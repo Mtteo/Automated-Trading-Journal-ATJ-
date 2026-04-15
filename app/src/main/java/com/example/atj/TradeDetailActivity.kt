@@ -1,11 +1,15 @@
 package com.example.atj
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
+import java.io.File
 
 // Activity che mostra il dettaglio completo di un singolo trade.
 class TradeDetailActivity : AppCompatActivity() {
@@ -17,7 +21,6 @@ class TradeDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trade_detail)
 
-        // Collego tutte le view.
         val assetTextView: TextView = findViewById(R.id.detailAssetText)
         val typeTextView: TextView = findViewById(R.id.detailTypeText)
         val dateTextView: TextView = findViewById(R.id.detailDateText)
@@ -27,9 +30,12 @@ class TradeDetailActivity : AppCompatActivity() {
         val notesTextView: TextView = findViewById(R.id.detailNotesText)
         val deleteTradeButton: Button = findViewById(R.id.deleteTradeButton)
 
+        // Nuove view per immagine
+        val tradeImageView: ImageView = findViewById(R.id.detailTradeImage)
+        val noImageTextView: TextView = findViewById(R.id.detailNoImageText)
+
         database = AppDatabase.getDatabase(this)
 
-        // Leggo l'id del trade passato dalla MainActivity.
         val tradeId = intent.getLongExtra("trade_id", -1)
 
         if (tradeId != -1L) {
@@ -43,10 +49,26 @@ class TradeDetailActivity : AppCompatActivity() {
                 resultTextView.text = "Result: ${trade.result}"
                 sourceTextView.text = "Source: ${trade.source}"
                 notesTextView.text = "Notes: ${trade.notes}"
+
+                // Se c'è immagine, la mostriamo
+                if (!trade.imagePath.isNullOrBlank()) {
+                    val imageFile = File(trade.imagePath)
+                    if (imageFile.exists()) {
+                        val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                        tradeImageView.setImageBitmap(bitmap)
+                        tradeImageView.visibility = View.VISIBLE
+                        noImageTextView.visibility = View.GONE
+                    } else {
+                        tradeImageView.visibility = View.GONE
+                        noImageTextView.visibility = View.VISIBLE
+                    }
+                } else {
+                    tradeImageView.visibility = View.GONE
+                    noImageTextView.visibility = View.VISIBLE
+                }
             }
         }
 
-        // Elimina il trade dal database e chiude la schermata.
         deleteTradeButton.setOnClickListener {
             currentTrade?.let { trade ->
                 database.tradeDao().deleteTrade(trade)

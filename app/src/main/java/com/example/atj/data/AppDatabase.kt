@@ -6,16 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.atj.model.Trade
 
-// Questo è il database principale dell'app.
-// Contiene la tabella Trade e il relativo DAO.
-@Database(entities = [Trade::class], version = 2)
+// Database principale dell'app.
+@Database(entities = [Trade::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
 
-    // Punto di accesso alle query sui trade.
     abstract fun tradeDao(): TradeDao
 
     companion object {
-        // INSTANCE serve per avere un solo database aperto nell'app.
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
@@ -26,12 +23,10 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "atj_database"
                 )
-                    // Se il modello cambia e non esiste una migration,
-                    // Room ricrea il database da zero.
+                    // In fase prototipo, se il modello cambia, ricreiamo il DB.
                     .fallbackToDestructiveMigration()
 
-                    // Per semplicità lasciamo le query nel main thread.
-                    // In produzione sarebbe meglio evitarlo.
+                    // Manteniamo la stessa impostazione del progetto attuale.
                     .allowMainThreadQueries()
                     .build()
 

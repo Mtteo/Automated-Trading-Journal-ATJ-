@@ -29,13 +29,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tradeAdapter: TradeAdapter
     private lateinit var database: AppDatabase
 
-    // TextView della dashboard
+    // TextView dashboard
     private lateinit var totalTradesText: TextView
     private lateinit var winRateText: TextView
     private lateinit var manualTradesText: TextView
     private lateinit var jsonTradesText: TextView
 
-    // Launcher moderno per aprire AddTradeActivity e ricevere il risultato.
     private val addTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -47,8 +46,8 @@ class MainActivity : AppCompatActivity() {
                 val session = data.getStringExtra("session") ?: "Unknown"
                 val resultValue = data.getStringExtra("result") ?: "Open"
                 val notes = data.getStringExtra("notes") ?: ""
+                val imagePath = data.getStringExtra("imagePath")
 
-                // Creo il trade partendo dai dati della schermata manuale.
                 val trade = Trade(
                     asset = asset,
                     type = type,
@@ -56,19 +55,14 @@ class MainActivity : AppCompatActivity() {
                     session = session,
                     result = resultValue,
                     notes = notes,
-                    source = "manual"
+                    source = "manual",
+                    imagePath = imagePath
                 )
 
-                // Lo salvo nel database.
                 val newId = database.tradeDao().insertTrade(trade)
-
-                // Creo una copia con id valorizzato.
                 val savedTrade = trade.copy(id = newId)
 
-                // Lo aggiungo subito alla lista visibile.
                 tradeAdapter.addTrade(savedTrade)
-
-                // Aggiorno anche la dashboard.
                 loadDashboard()
             }
         }
@@ -77,23 +71,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Collego i bottoni
         addTradeButton = findViewById(R.id.addTradeButton)
         simulateTradeButton = findViewById(R.id.simulateTradeButton)
-
-        // Collego RecyclerView
         tradeRecyclerView = findViewById(R.id.tradeRecyclerView)
 
-        // Collego TextView dashboard
         totalTradesText = findViewById(R.id.totalTradesText)
         winRateText = findViewById(R.id.winRateText)
         manualTradesText = findViewById(R.id.manualTradesText)
         jsonTradesText = findViewById(R.id.jsonTradesText)
 
-        // Recupero istanza database
         database = AppDatabase.getDatabase(this)
 
-        // Creo l'adapter e definisco cosa succede quando clicco un trade
         tradeAdapter = TradeAdapter(mutableListOf()) { trade ->
             val intent = Intent(this, TradeDetailActivity::class.java).apply {
                 putExtra("trade_id", trade.id)
@@ -101,21 +89,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Imposto RecyclerView
         tradeRecyclerView.layoutManager = LinearLayoutManager(this)
         tradeRecyclerView.adapter = tradeAdapter
 
-        // Carico i trade già presenti e la dashboard
         loadTrades()
         loadDashboard()
 
-        // Apertura schermata di inserimento manuale
         addTradeButton.setOnClickListener {
             val intent = Intent(this, AddTradeActivity::class.java)
             addTradeLauncher.launch(intent)
         }
 
-        // Simulazione di un evento esterno JSON
         simulateTradeButton.setOnClickListener {
             simulateTradeEvent()
         }
@@ -123,9 +107,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        // Ogni volta che torniamo su questa schermata, ricarichiamo i dati.
-        // Serve per esempio dopo un delete nel dettaglio.
         loadTrades()
         loadDashboard()
     }
@@ -136,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         tradeAdapter.replaceTrades(allTrades)
     }
 
-    // Aggiorna le statistiche della dashboard.
+    // Dashboard statistiche
     private fun loadDashboard() {
         val allTrades = database.tradeDao().getAllTrades()
 
@@ -144,20 +125,14 @@ class MainActivity : AppCompatActivity() {
         val manualTrades = allTrades.count { it.source.trim().lowercase() == "manual" }
         val jsonTrades = allTrades.count { it.source.trim().lowercase() == "json" }
 
-        // Normalizziamo il risultato per evitare problemi tipo:
-        // "win", "Win ", " WIN", ecc.
         val normalizedResults = allTrades.map { it.result.trim().lowercase() }
 
-        // Consideriamo chiusi i trade con risultato:
-        // win, loss, be
         val closedTradesCount = normalizedResults.count {
             it == "win" || it == "loss" || it == "be"
         }
 
-        // Trade vincenti reali
         val winningTrades = normalizedResults.count { it == "win" }
 
-        // Win rate = win / trade chiusi * 100
         val winRate = if (closedTradesCount > 0) {
             (winningTrades * 100) / closedTradesCount
         } else {
@@ -170,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         jsonTradesText.text = "JSON Trades: $jsonTrades"
     }
 
-    // Simula l'arrivo di un JSON locale e crea un trade automatico.
+    // Simula un evento JSON locale
     private fun simulateTradeEvent() {
         val sampleJson = """
             {
@@ -180,19 +155,11 @@ class MainActivity : AppCompatActivity() {
             }
         """.trimIndent()
 
-        // Parsing del JSON con il metodo reale presente nella repo.
         val parsedTrade = TradeEventParser.parseTradeEvent(sampleJson)
-
-        // Salvataggio nel database.
         val newId = database.tradeDao().insertTrade(parsedTrade)
-
-        // Aggiorno l'id anche nell'oggetto in memoria.
         val savedTrade = parsedTrade.copy(id = newId)
 
-        // Aggiungo subito alla lista.
         tradeAdapter.addTrade(savedTrade)
-
-        // Aggiorno dashboard.
         loadDashboard()
     }
 }

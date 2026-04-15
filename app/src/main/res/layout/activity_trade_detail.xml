@@ -1,76 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Layout del dettaglio trade.
-    Qui mostriamo tutte le informazioni principali
-    e permettiamo anche di eliminare il trade.
--->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/detailAssetText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Asset"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:paddingBottom="12dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/detailTypeText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Type"
-        android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trade Detail"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
 
-    <TextView
-        android:id="@+id/detailDateText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Date"
-        android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        <TextView
+            android:id="@+id/detailAssetText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Asset:" />
 
-    <TextView
-        android:id="@+id/detailSessionText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Session"
-        android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        <TextView
+            android:id="@+id/detailTypeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Type:" />
 
-    <TextView
-        android:id="@+id/detailResultText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Result"
-        android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        <TextView
+            android:id="@+id/detailDateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Date:" />
 
-    <TextView
-        android:id="@+id/detailSourceText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Source"
-        android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        <TextView
+            android:id="@+id/detailSessionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Session:" />
 
-    <TextView
-        android:id="@+id/detailNotesText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Notes"
-        android:textSize="18sp"
-        android:paddingBottom="20dp" />
+        <TextView
+            android:id="@+id/detailResultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Result:" />
 
-    <Button
-        android:id="@+id/deleteTradeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Trade" />
+        <TextView
+            android:id="@+id/detailSourceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Source:" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/detailNotesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Notes:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Attached Image:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailNoImageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="No image attached" />
+
+        <ImageView
+            android:id="@+id/detailTradeImage"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/deleteTradeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Delete Trade" />
+
+    </LinearLayout>
+</ScrollView>

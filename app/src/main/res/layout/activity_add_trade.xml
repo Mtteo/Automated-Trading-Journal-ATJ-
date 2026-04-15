@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Layout della schermata di inserimento manuale di un trade.
-    Usiamo una ScrollView così, se aggiungiamo campi, non si rompe su schermi piccoli.
+    Schermata di inserimento manuale di un trade.
+    Ora include anche selezione immagine da galleria e foto da camera.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Titolo schermata -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,45 +21,43 @@
             android:textStyle="bold"
             android:paddingBottom="16dp" />
 
-        <!-- Campo asset -->
         <EditText
             android:id="@+id/assetEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Asset (e.g. NAS100)" />
+            android:hint="Asset (e.g. NAS100)"
+            android:inputType="text" />
 
-        <!-- Scelta Buy/Sell -->
         <Spinner
             android:id="@+id/typeSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp" />
 
-        <!-- Data -->
         <EditText
             android:id="@+id/dateEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Date (e.g. 2026-04-14)" />
+            android:hint="Date (e.g. 2026-04-14)"
+            android:inputType="text" />
 
-        <!-- Sessione -->
         <EditText
             android:id="@+id/sessionInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Session (NY, London, Asia)" />
+            android:hint="Session (NY, London, Asia)"
+            android:inputType="text" />
 
-        <!-- Risultato -->
         <EditText
             android:id="@+id/resultInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Result (Win, Loss, BE)" />
+            android:hint="Result (Win, Loss, BE)"
+            android:inputType="text" />
 
-        <!-- Note -->
         <EditText
             android:id="@+id/notesInput"
             android:layout_width="match_parent"
@@ -68,9 +65,34 @@
             android:layout_marginTop="12dp"
             android:hint="Notes"
             android:minLines="3"
-            android:gravity="top" />
+            android:gravity="top"
+            android:inputType="textMultiLine" />
 
-        <!-- Bottone salvataggio -->
+        <!-- Pulsanti media -->
+        <Button
+            android:id="@+id/pickImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Pick Image from Gallery" />
+
+        <Button
+            android:id="@+id/takePhotoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Take Photo" />
+
+        <!-- Preview immagine -->
+        <ImageView
+            android:id="@+id/imagePreview"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="12dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/saveTradeButton"
             android:layout_width="match_parent"
