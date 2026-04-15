@@ -6,8 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.atj.model.Trade
 
-// Database principale dell'app.
-@Database(entities = [Trade::class], version = 3)
+@Database(entities = [Trade::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tradeDao(): TradeDao
@@ -23,10 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "atj_database"
                 )
-                    // In fase prototipo, se il modello cambia, ricreiamo il DB.
                     .fallbackToDestructiveMigration()
-
-                    // Manteniamo la stessa impostazione del progetto attuale.
                     .allowMainThreadQueries()
                     .build()
 

@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Titolo schermata -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -15,7 +14,6 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <!-- Box statistiche -->
     <LinearLayout
         android:id="@+id/dashboardContainer"
         android:layout_width="match_parent"
@@ -58,15 +56,20 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Bottone aggiunta trade manuale -->
+    <Button
+        android:id="@+id/strategyButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Strategy" />
+
     <Button
         android:id="@+id/addTradeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Add Trade" />
 
-    <!-- Bottone simulazione trade JSON -->
     <Button
         android:id="@+id/simulateTradeButton"
         android:layout_width="match_parent"
@@ -74,7 +77,6 @@
         android:layout_marginTop="8dp"
         android:text="Simulate JSON Trade" />
 
-    <!-- Lista trade -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tradeRecyclerView"
         android:layout_width="match_parent"

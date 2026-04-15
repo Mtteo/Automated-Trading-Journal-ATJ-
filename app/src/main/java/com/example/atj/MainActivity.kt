@@ -1,5 +1,6 @@
 package com.example.atj
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -12,28 +13,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import com.example.atj.ui.TradeAdapter
+import com.example.atj.utils.LocationHelper
+import com.example.atj.utils.SessionHelper
+import com.example.atj.utils.StrategyManager
 import com.example.atj.utils.TradeEventParser
 
-// Activity principale dell'app.
-// Qui gestiamo:
-// - caricamento lista trade
-// - aggiunta manuale
-// - simulazione evento JSON
-// - apertura dettaglio trade
-// - dashboard con statistiche base
 class MainActivity : AppCompatActivity() {
 
     private lateinit var addTradeButton: Button
     private lateinit var simulateTradeButton: Button
+    private lateinit var strategyButton: Button
     private lateinit var tradeRecyclerView: RecyclerView
     private lateinit var tradeAdapter: TradeAdapter
     private lateinit var database: AppDatabase
 
-    // TextView dashboard
     private lateinit var totalTradesText: TextView
     private lateinit var winRateText: TextView
     private lateinit var manualTradesText: TextView
     private lateinit var jsonTradesText: TextView
+
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            // Non facciamo nulla qui: la location verrà letta quando serve.
+        }
 
     private val addTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -47,6 +49,10 @@ class MainActivity : AppCompatActivity() {
                 val resultValue = data.getStringExtra("result") ?: "Open"
                 val notes = data.getStringExtra("notes") ?: ""
                 val imagePath = data.getStringExtra("imagePath")
+                val strategyName = data.getStringExtra("strategyName") ?: ""
+                val checkedConfluences = data.getStringExtra("checkedConfluences") ?: ""
+                val confluenceScore = data.getIntExtra("confluenceScore", 0)
+                val locationText = data.getStringExtra("locationText") ?: "Unknown"
 
                 val trade = Trade(
                     asset = asset,
@@ -56,7 +62,11 @@ class MainActivity : AppCompatActivity() {
                     result = resultValue,
                     notes = notes,
                     source = "manual",
-                    imagePath = imagePath
+                    imagePath = imagePath,
+                    strategyName = strategyName,
+                    checkedConfluences = checkedConfluences,
+                    confluenceScore = confluenceScore,
+                    locationText = locationText
                 )
 
                 val newId = database.tradeDao().insertTrade(trade)
@@ -73,6 +83,7 @@ class MainActivity : AppCompatActivity() {
 
         addTradeButton = findViewById(R.id.addTradeButton)
         simulateTradeButton = findViewById(R.id.simulateTradeButton)
+        strategyButton = findViewById(R.id.strategyButton)
         tradeRecyclerView = findViewById(R.id.tradeRecyclerView)
 
         totalTradesText = findViewById(R.id.totalTradesText)
@@ -92,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         tradeRecyclerView.layoutManager = LinearLayoutManager(this)
         tradeRecyclerView.adapter = tradeAdapter
 
+        requestLocationPermissionIfNeeded()
         loadTrades()
         loadDashboard()
 
@@ -103,6 +115,10 @@ class MainActivity : AppCompatActivity() {
         simulateTradeButton.setOnClickListener {
             simulateTradeEvent()
         }
+
+        strategyButton.setOnClickListener {
+            startActivity(Intent(this, StrategyActivity::class.java))
+        }
     }
 
     override fun onResume() {
@@ -111,13 +127,22 @@ class MainActivity : AppCompatActivity() {
         loadDashboard()
     }
 
-    // Carica tutti i trade dal database e li mostra nella lista.
+    private fun requestLocationPermissionIfNeeded() {
+        if (!LocationHelper.hasLocationPermission(this)) {
+            requestLocationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
     private fun loadTrades() {
         val allTrades = database.tradeDao().getAllTrades()
         tradeAdapter.replaceTrades(allTrades)
     }
 
-    // Dashboard statistiche
     private fun loadDashboard() {
         val allTrades = database.tradeDao().getAllTrades()
 
@@ -145,7 +170,6 @@ class MainActivity : AppCompatActivity() {
         jsonTradesText.text = "JSON Trades: $jsonTrades"
     }
 
-    // Simula un evento JSON locale
     private fun simulateTradeEvent() {
         val sampleJson = """
             {
@@ -156,8 +180,28 @@ class MainActivity : AppCompatActivity() {
         """.trimIndent()
 
         val parsedTrade = TradeEventParser.parseTradeEvent(sampleJson)
-        val newId = database.tradeDao().insertTrade(parsedTrade)
-        val savedTrade = parsedTrade.copy(id = newId)
+        val activeStrategy = StrategyManager.getStrategy(this)
+
+        // Per il trade JSON simulato compiliamo automaticamente:
+        // - sessione da timestamp del trade
+        // - data leggibile da timestamp
+        // - luogo dal device
+        val timestamp = 1713139200000L
+        val autoSession = SessionHelper.getSessionFromTimestamp(timestamp)
+        val formattedDate = SessionHelper.formatDateFromTimestamp(timestamp)
+        val autoLocation = LocationHelper.getCurrentLocationText(this)
+
+        val enrichedTrade = parsedTrade.copy(
+            date = formattedDate,
+            session = autoSession,
+            strategyName = activeStrategy.name,
+            checkedConfluences = "",
+            confluenceScore = 0,
+            locationText = autoLocation
+        )
+
+        val newId = database.tradeDao().insertTrade(enrichedTrade)
+        val savedTrade = enrichedTrade.copy(id = newId)
 
         tradeAdapter.addTrade(savedTrade)
         loadDashboard()

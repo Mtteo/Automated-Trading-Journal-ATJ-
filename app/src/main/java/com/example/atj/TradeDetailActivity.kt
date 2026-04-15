@@ -11,7 +11,6 @@ import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import java.io.File
 
-// Activity che mostra il dettaglio completo di un singolo trade.
 class TradeDetailActivity : AppCompatActivity() {
 
     private lateinit var database: AppDatabase
@@ -28,9 +27,12 @@ class TradeDetailActivity : AppCompatActivity() {
         val resultTextView: TextView = findViewById(R.id.detailResultText)
         val sourceTextView: TextView = findViewById(R.id.detailSourceText)
         val notesTextView: TextView = findViewById(R.id.detailNotesText)
+        val strategyNameTextView: TextView = findViewById(R.id.detailStrategyNameText)
+        val confluenceScoreTextView: TextView = findViewById(R.id.detailConfluenceScoreText)
+        val checkedConfluencesTextView: TextView = findViewById(R.id.detailCheckedConfluencesText)
+        val locationTextView: TextView = findViewById(R.id.detailLocationText)
         val deleteTradeButton: Button = findViewById(R.id.deleteTradeButton)
 
-        // Nuove view per immagine
         val tradeImageView: ImageView = findViewById(R.id.detailTradeImage)
         val noImageTextView: TextView = findViewById(R.id.detailNoImageText)
 
@@ -49,8 +51,12 @@ class TradeDetailActivity : AppCompatActivity() {
                 resultTextView.text = "Result: ${trade.result}"
                 sourceTextView.text = "Source: ${trade.source}"
                 notesTextView.text = "Notes: ${trade.notes}"
+                strategyNameTextView.text = "Strategy: ${trade.strategyName.ifBlank { "Not set" }}"
+                confluenceScoreTextView.text = "Confluence Score: ${trade.confluenceScore}%"
+                checkedConfluencesTextView.text =
+                    "Checked Confluences: ${trade.checkedConfluences.ifBlank { "None" }}"
+                locationTextView.text = "Location: ${trade.locationText}"
 
-                // Se c'è immagine, la mostriamo
                 if (!trade.imagePath.isNullOrBlank()) {
                     val imageFile = File(trade.imagePath)
                     if (imageFile.exists()) {

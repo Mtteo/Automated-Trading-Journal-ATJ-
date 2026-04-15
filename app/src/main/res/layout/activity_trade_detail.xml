@@ -45,6 +45,13 @@
             android:text="Session:" />
 
         <TextView
+            android:id="@+id/detailLocationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Location:" />
+
+        <TextView
             android:id="@+id/detailResultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,6 +64,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Source:" />
+
+        <TextView
+            android:id="@+id/detailStrategyNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Strategy:" />
+
+        <TextView
+            android:id="@+id/detailConfluenceScoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Confluence Score:" />
+
+        <TextView
+            android:id="@+id/detailCheckedConfluencesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Checked Confluences:" />
 
         <TextView
             android:id="@+id/detailNotesText"

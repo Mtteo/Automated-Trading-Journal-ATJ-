@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Schermata di inserimento manuale di un trade.
-    Ora include anche selezione immagine da galleria e foto da camera.
--->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -39,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Date (e.g. 2026-04-14)"
+            android:hint="Date"
             android:inputType="text" />
 
         <EditText
@@ -47,7 +43,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Session (NY, London, Asia)"
+            android:hint="Session"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/locationInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Location"
             android:inputType="text" />
 
         <EditText
@@ -63,12 +67,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Notes"
-            android:minLines="3"
+            android:hint="Notes / reasoning"
+            android:minLines="4"
             android:gravity="top"
             android:inputType="textMultiLine" />
 
-        <!-- Pulsanti media -->
+        <Button
+            android:id="@+id/voiceReflectionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Add Voice Reflection" />
+
+        <TextView
+            android:id="@+id/activeStrategyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Active Strategy: Not defined"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Checklist"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/noChecklistText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="No checklist defined in Strategy section" />
+
+        <LinearLayout
+            android:id="@+id/checklistContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical" />
+
         <Button
             android:id="@+id/pickImageButton"
             android:layout_width="match_parent"
@@ -83,7 +123,6 @@
             android:layout_marginTop="8dp"
             android:text="Take Photo" />
 
-        <!-- Preview immagine -->
         <ImageView
             android:id="@+id/imagePreview"
             android:layout_width="match_parent"
