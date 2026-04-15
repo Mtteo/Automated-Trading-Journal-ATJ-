@@ -3,6 +3,7 @@ package com.example.atj
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -14,6 +15,7 @@ import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import com.example.atj.ui.TradeAdapter
 import com.example.atj.utils.LocationHelper
+import com.example.atj.utils.NotificationHelper
 import com.example.atj.utils.SessionHelper
 import com.example.atj.utils.StrategyManager
 import com.example.atj.utils.TradeEventParser
@@ -34,7 +36,10 @@ class MainActivity : AppCompatActivity() {
 
     private val requestLocationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            // Non facciamo nulla qui: la location verrà letta quando serve.
+        }
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         }
 
     private val addTradeLauncher =
@@ -74,6 +79,14 @@ class MainActivity : AppCompatActivity() {
 
                 tradeAdapter.addTrade(savedTrade)
                 loadDashboard()
+
+                // Notifica immediata di conferma creazione trade manuale.
+                NotificationHelper.showTradeCreatedNotification(
+                    context = this,
+                    asset = savedTrade.asset,
+                    type = savedTrade.type,
+                    source = savedTrade.source
+                )
             }
         }
 
@@ -103,7 +116,11 @@ class MainActivity : AppCompatActivity() {
         tradeRecyclerView.layoutManager = LinearLayoutManager(this)
         tradeRecyclerView.adapter = tradeAdapter
 
+        NotificationHelper.createNotificationChannel(this)
         requestLocationPermissionIfNeeded()
+        requestNotificationPermissionIfNeeded()
+        NotificationHelper.scheduleAllSessionNotifications(this)
+
         loadTrades()
         loadDashboard()
 
@@ -135,6 +152,12 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
+        }
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
@@ -182,10 +205,6 @@ class MainActivity : AppCompatActivity() {
         val parsedTrade = TradeEventParser.parseTradeEvent(sampleJson)
         val activeStrategy = StrategyManager.getStrategy(this)
 
-        // Per il trade JSON simulato compiliamo automaticamente:
-        // - sessione da timestamp del trade
-        // - data leggibile da timestamp
-        // - luogo dal device
         val timestamp = 1713139200000L
         val autoSession = SessionHelper.getSessionFromTimestamp(timestamp)
         val formattedDate = SessionHelper.formatDateFromTimestamp(timestamp)
@@ -205,5 +224,13 @@ class MainActivity : AppCompatActivity() {
 
         tradeAdapter.addTrade(savedTrade)
         loadDashboard()
+
+        // Notifica immediata di conferma creazione trade JSON.
+        NotificationHelper.showTradeCreatedNotification(
+            context = this,
+            asset = savedTrade.asset,
+            type = savedTrade.type,
+            source = savedTrade.source
+        )
     }
 }
