@@ -2,15 +2,9 @@ package com.example.atj.utils
 
 import android.content.Context
 
-// Manager semplice basato su SharedPreferences.
-// Serve per salvare una strategia unica definita dall'utente.
 object StrategyManager {
 
     private const val PREFS_NAME = "atj_strategy_prefs"
-    private const val KEY_STRATEGY_NAME = "strategy_name"
-    private const val KEY_STRATEGY_DESCRIPTION = "strategy_description"
-    private const val KEY_STRATEGY_IMAGE_PATH = "strategy_image_path"
-    private const val KEY_STRATEGY_ITEMS = "strategy_items"
 
     data class StrategyData(
         val name: String,
@@ -19,6 +13,10 @@ object StrategyManager {
         val checklistItems: List<String>
     )
 
+    private fun buildKey(userId: Long, field: String): String {
+        return "user_${userId}_$field"
+    }
+
     fun saveStrategy(
         context: Context,
         name: String,
@@ -26,22 +24,30 @@ object StrategyManager {
         imagePath: String?,
         checklistItems: List<String>
     ) {
+        val userId = SessionManager.getLoggedInUserId(context)
+        if (userId == -1L) return
+
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit()
-            .putString(KEY_STRATEGY_NAME, name)
-            .putString(KEY_STRATEGY_DESCRIPTION, description)
-            .putString(KEY_STRATEGY_IMAGE_PATH, imagePath)
-            .putString(KEY_STRATEGY_ITEMS, checklistItems.joinToString("|||"))
+            .putString(buildKey(userId, "strategy_name"), name)
+            .putString(buildKey(userId, "strategy_description"), description)
+            .putString(buildKey(userId, "strategy_image_path"), imagePath)
+            .putString(buildKey(userId, "strategy_items"), checklistItems.joinToString("|||"))
             .apply()
     }
 
     fun getStrategy(context: Context): StrategyData {
+        val userId = SessionManager.getLoggedInUserId(context)
+        if (userId == -1L) {
+            return StrategyData("", "", null, emptyList())
+        }
+
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-        val name = prefs.getString(KEY_STRATEGY_NAME, "") ?: ""
-        val description = prefs.getString(KEY_STRATEGY_DESCRIPTION, "") ?: ""
-        val imagePath = prefs.getString(KEY_STRATEGY_IMAGE_PATH, null)
-        val itemsRaw = prefs.getString(KEY_STRATEGY_ITEMS, "") ?: ""
+        val name = prefs.getString(buildKey(userId, "strategy_name"), "") ?: ""
+        val description = prefs.getString(buildKey(userId, "strategy_description"), "") ?: ""
+        val imagePath = prefs.getString(buildKey(userId, "strategy_image_path"), null)
+        val itemsRaw = prefs.getString(buildKey(userId, "strategy_items"), "") ?: ""
 
         val checklistItems = if (itemsRaw.isBlank()) {
             emptyList()
@@ -49,12 +55,7 @@ object StrategyManager {
             itemsRaw.split("|||").map { it.trim() }.filter { it.isNotBlank() }
         }
 
-        return StrategyData(
-            name = name,
-            description = description,
-            imagePath = imagePath,
-            checklistItems = checklistItems
-        )
+        return StrategyData(name, description, imagePath, checklistItems)
     }
 
     fun hasStrategy(context: Context): Boolean {

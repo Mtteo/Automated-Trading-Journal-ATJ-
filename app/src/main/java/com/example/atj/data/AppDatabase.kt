@@ -5,11 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.atj.model.Trade
+import com.example.atj.model.User
 
-@Database(entities = [Trade::class], version = 5)
+@Database(entities = [Trade::class, User::class], version = 6)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tradeDao(): TradeDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile

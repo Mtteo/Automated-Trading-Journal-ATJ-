@@ -32,8 +32,10 @@
         <activity android:name=".StrategyActivity" />
         <activity android:name=".TradeDetailActivity" />
         <activity android:name=".AddTradeActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".AnalyticsActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

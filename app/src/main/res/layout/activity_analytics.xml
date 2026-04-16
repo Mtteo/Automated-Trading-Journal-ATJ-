@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Analytics"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:id="@+id/totalTradesAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total Trades: 0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/closedTradesAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Closed Trades: 0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/openTradesAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Open Trades: 0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/avgConfluenceScoreAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Average Confluence Score: 0%"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/bestAssetAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Best Asset:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/bestSessionAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Best Session:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/sessionBreakdownAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Session Breakdown:" />
+
+        <TextView
+            android:id="@+id/assetWinRatesAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Asset Win Rates:" />
+
+        <TextView
+            android:id="@+id/sessionWinRatesAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Session Win Rates:" />
+
+        <TextView
+            android:id="@+id/sourceBreakdownAnalyticsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Source Breakdown:" />
+
+    </LinearLayout>
+</ScrollView>

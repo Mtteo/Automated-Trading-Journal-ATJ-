@@ -2,36 +2,34 @@ package com.example.atj.utils
 
 import com.example.atj.model.Trade
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-// Oggetto utility che si occupa di convertire un JSON simulato
-// in un oggetto Trade pronto da salvare nel database.
+// Parser semplice per simulare l'arrivo di un trade da evento JSON.
 object TradeEventParser {
 
     fun parseTradeEvent(json: String): Trade {
-        // Converte la stringa JSON in un oggetto leggibile.
         val jsonObject = JSONObject(json)
 
-        // Estrae i campi principali dal JSON.
         val asset = jsonObject.getString("asset")
         val type = jsonObject.getString("type")
         val timestamp = jsonObject.getLong("timestamp")
 
-        // Converte il timestamp in una data leggibile.
-        val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            .format(Date(timestamp))
+        val formattedDate = SessionHelper.formatDateFromTimestamp(timestamp)
+        val session = SessionHelper.getSessionFromTimestamp(timestamp)
 
-        // Restituisce un Trade con alcuni campi valorizzati automaticamente.
         return Trade(
+            userId = 0L, // verrà poi sostituito in MainActivity con l'utente loggato
             asset = asset,
             type = type,
             date = formattedDate,
-            session = "NY",
+            session = session,
             result = "Open",
-            notes = "Auto generated",
-            source = "json"
+            notes = "",
+            source = "json",
+            imagePath = null,
+            strategyName = "",
+            checkedConfluences = "",
+            confluenceScore = 0,
+            locationText = "Unknown"
         )
     }
 }

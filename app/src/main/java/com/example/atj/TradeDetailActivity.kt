@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
+import com.example.atj.utils.SessionManager
 import java.io.File
 
 class TradeDetailActivity : AppCompatActivity() {
@@ -18,6 +19,12 @@ class TradeDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!SessionManager.isLoggedIn(this)) {
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_trade_detail)
 
         val assetTextView: TextView = findViewById(R.id.detailAssetText)
