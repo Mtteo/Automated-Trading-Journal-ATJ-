@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dashboardScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F7F8FC"
@@ -13,26 +12,52 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- HEADER -->
-        <TextView
-            android:id="@+id/welcomeTitleText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ATJ Dashboard"
-            android:textColor="#121826"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/welcomeSubtitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Start building your trading journal."
-            android:textColor="#667085"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <!-- HERO CARD -->
+                <TextView
+                    android:id="@+id/welcomeTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ATJ Dashboard"
+                    android:textColor="#121826"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/welcomeSubtitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Track your execution with clean structure."
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="Logout"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="#FFFFFF"
+                app:cornerRadius="14dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp"
+                android:textColor="#121826" />
+        </LinearLayout>
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,7 +97,6 @@
                     android:textColor="#9CA3AF"
                     android:textSize="14sp" />
 
-                <!-- BOTTONI -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,7 +104,6 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <!-- ADD TRADE -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/addTradeButton"
                         android:layout_width="0dp"
@@ -97,7 +120,6 @@
                         android:layout_width="12dp"
                         android:layout_height="1dp" />
 
-                    <!-- SIMULATE JSON (FIXED) -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/simulateTradeButton"
                         android:layout_width="0dp"
@@ -116,7 +138,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- OVERVIEW -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,7 +147,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- ROW 1 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,7 +154,6 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <!-- TOTAL TRADES -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -173,7 +192,6 @@
                 android:layout_width="12dp"
                 android:layout_height="1dp" />
 
-            <!-- WIN RATE -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -209,7 +227,6 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- SOURCE -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -222,9 +239,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -249,20 +266,55 @@
                         android:textColor="#667085"
                         android:textSize="13sp" />
                 </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/openStrategyButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:text="Strategy"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    app:backgroundTint="#121826"
-                    app:cornerRadius="14dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- RECENT TRADES -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Workspace"
+            android:textColor="#121826"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/openAnalyticsButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="Analytics"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                app:backgroundTint="#121826"
+                app:cornerRadius="16dp" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/openStrategyButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="Strategy"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                app:backgroundTint="#FFFFFF"
+                app:cornerRadius="16dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp"
+                android:textColor="#121826" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

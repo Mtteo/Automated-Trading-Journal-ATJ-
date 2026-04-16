@@ -17,26 +17,25 @@ import com.example.atj.utils.TradeEventParser
 import com.google.android.material.button.MaterialButton
 
 /**
- * Dashboard principale dell'app.
+ * Dashboard principale.
  *
- * Questa versione è allineata con la tua base reale:
- * - usa SessionManager per recuperare l'utente loggato
- * - filtra i trade per userId
- * - crea trade manuali con userId obbligatorio
- * - evita riferimenti a view non presenti nel layout
+ * Obiettivi:
+ * - UI più professionale
+ * - metriche subito visibili
+ * - accesso rapido a Add Trade / Analytics / Strategy / Logout
+ * - lista trade recenti
  */
 class MainActivity : AppCompatActivity() {
 
-    // Pulsanti principali della dashboard
     private lateinit var addTradeButton: MaterialButton
     private lateinit var simulateTradeButton: MaterialButton
     private lateinit var openStrategyButton: MaterialButton
+    private lateinit var openAnalyticsButton: MaterialButton
+    private lateinit var logoutButton: MaterialButton
 
-    // Testi header
     private lateinit var welcomeTitleText: TextView
     private lateinit var welcomeSubtitleText: TextView
 
-    // Card statistiche
     private lateinit var totalTradesValueText: TextView
     private lateinit var totalTradesLabelText: TextView
 
@@ -46,25 +45,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sourceValueText: TextView
     private lateinit var sourceLabelText: TextView
 
-    // Testi sezione lista
     private lateinit var recentTradesCountText: TextView
     private lateinit var emptyStateText: TextView
 
-    // Lista trade
     private lateinit var tradeRecyclerView: RecyclerView
     private lateinit var tradeAdapter: TradeAdapter
 
-    // Database
     private lateinit var database: AppDatabase
 
-    // Utente loggato
     private var currentUserId: Long = -1L
     private var currentUsername: String = ""
 
-    /**
-     * Launcher moderno per AddTradeActivity.
-     * Quando l'utente salva un trade, riceviamo i dati e lo inseriamo nel DB.
-     */
     private val addTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -77,7 +68,6 @@ class MainActivity : AppCompatActivity() {
                 val resultValue = data.getStringExtra("result") ?: "Open"
                 val notes = data.getStringExtra("notes") ?: ""
 
-                // Creazione del trade manuale associato all'utente loggato.
                 val trade = Trade(
                     userId = currentUserId,
                     asset = asset,
@@ -101,17 +91,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Recupero database
         database = AppDatabase.getDatabase(this)
 
-        // Recupero utente loggato dalla sessione
         currentUserId = SessionManager.getLoggedInUserId(this)
         currentUsername = SessionManager.getLoggedInUsername(this)
 
-        // Sicurezza minima: se per qualche motivo non esiste una sessione valida,
-        // evitiamo di lavorare con userId non valido.
         if (currentUserId == -1L) {
-            finish()
+            openLoginAndClose()
             return
         }
 
@@ -124,17 +110,23 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        // Ricarichiamo i dati quando si torna sulla dashboard
+        currentUserId = SessionManager.getLoggedInUserId(this)
+        currentUsername = SessionManager.getLoggedInUsername(this)
+
+        if (currentUserId == -1L) {
+            openLoginAndClose()
+            return
+        }
+
         refreshDashboard()
     }
 
-    /**
-     * Collega tutte le view del layout.
-     */
     private fun bindViews() {
         addTradeButton = findViewById(R.id.addTradeButton)
         simulateTradeButton = findViewById(R.id.simulateTradeButton)
         openStrategyButton = findViewById(R.id.openStrategyButton)
+        openAnalyticsButton = findViewById(R.id.openAnalyticsButton)
+        logoutButton = findViewById(R.id.logoutButton)
 
         welcomeTitleText = findViewById(R.id.welcomeTitleText)
         welcomeSubtitleText = findViewById(R.id.welcomeSubtitleText)
@@ -154,9 +146,6 @@ class MainActivity : AppCompatActivity() {
         tradeRecyclerView = findViewById(R.id.tradeRecyclerView)
     }
 
-    /**
-     * Configura la RecyclerView dei trade.
-     */
     private fun setupRecyclerView() {
         tradeAdapter = TradeAdapter(mutableListOf()) { trade ->
             val intent = Intent(this, TradeDetailActivity::class.java).apply {
@@ -170,9 +159,6 @@ class MainActivity : AppCompatActivity() {
         tradeRecyclerView.setHasFixedSize(false)
     }
 
-    /**
-     * Listener di tutti i pulsanti della dashboard.
-     */
     private fun setupClickListeners() {
         addTradeButton.setOnClickListener {
             val intent = Intent(this, AddTradeActivity::class.java)
@@ -184,13 +170,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         openStrategyButton.setOnClickListener {
-            openStrategyScreen()
+            startActivity(Intent(this, StrategyActivity::class.java))
+        }
+
+        openAnalyticsButton.setOnClickListener {
+            startActivity(Intent(this, AnalyticsActivity::class.java))
+        }
+
+        logoutButton.setOnClickListener {
+            SessionManager.logout(this)
+            openLoginAndClose()
         }
     }
 
-    /**
-     * Ricarica lista + statistiche per l'utente loggato.
-     */
     private fun refreshDashboard() {
         val allTrades = database.tradeDao().getTradesByUserId(currentUserId)
 
@@ -202,17 +194,10 @@ class MainActivity : AppCompatActivity() {
         tradeRecyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }
 
-    /**
-     * Aggiorna i numeri mostrati nella dashboard.
-     */
     private fun updateDashboardStats(trades: List<Trade>) {
         val totalTrades = trades.size
-
-        // Trade chiusi = tutti quelli diversi da Open
         val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
         val openTradesCount = totalTrades - closedTrades.size
-
-        // Conteggio dei win sui trade chiusi
         val wins = closedTrades.count { it.result.equals("Win", ignoreCase = true) }
 
         val winRate = if (closedTrades.isNotEmpty()) {
@@ -224,7 +209,6 @@ class MainActivity : AppCompatActivity() {
         val manualCount = trades.count { it.source.equals("manual", ignoreCase = true) }
         val jsonCount = trades.count { it.source.equals("json", ignoreCase = true) }
 
-        // Header dashboard
         welcomeTitleText.text = if (currentUsername.isNotBlank()) {
             "Welcome, $currentUsername"
         } else {
@@ -232,16 +216,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         welcomeSubtitleText.text = if (totalTrades == 0) {
-            "Start building your trading journal."
+            "Track your execution with clean structure."
         } else {
             "${closedTrades.size} closed • $openTradesCount open • Stay consistent."
         }
 
-        // Stat card 1
         totalTradesValueText.text = totalTrades.toString()
         totalTradesLabelText.text = "Total trades"
 
-        // Stat card 2
         winRateValueText.text = "$winRate%"
         winRateLabelText.text = if (closedTrades.isNotEmpty()) {
             "$wins wins on ${closedTrades.size} closed"
@@ -249,11 +231,9 @@ class MainActivity : AppCompatActivity() {
             "No closed trades yet"
         }
 
-        // Stat card 3
         sourceValueText.text = "$manualCount / $jsonCount"
         sourceLabelText.text = "Manual / JSON"
 
-        // Testo sopra la lista
         recentTradesCountText.text = if (totalTrades == 0) {
             "0 trades"
         } else {
@@ -261,17 +241,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Apre la schermata strategie.
-     */
-    private fun openStrategyScreen() {
-        val intent = Intent(this, StrategyActivity::class.java)
-        startActivity(intent)
-    }
-
-    /**
-     * Simula un trade JSON e lo salva per l'utente corrente.
-     */
     private fun simulateTradeEvent() {
         val sampleJson = """
             {
@@ -281,8 +250,6 @@ class MainActivity : AppCompatActivity() {
             }
         """.trimIndent()
 
-        // TradeEventParser restituisce un Trade;
-        // qui forziamo l'associazione all'utente loggato.
         val parsedTrade = TradeEventParser.parseTradeEvent(sampleJson).copy(userId = currentUserId)
 
         val newId = database.tradeDao().insertTrade(parsedTrade)
@@ -290,5 +257,10 @@ class MainActivity : AppCompatActivity() {
 
         tradeAdapter.addTrade(savedTrade)
         refreshDashboard()
+    }
+
+    private fun openLoginAndClose() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 }

@@ -1,143 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F7F8FC"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add New Trade"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:paddingBottom="16dp" />
-
-        <EditText
-            android:id="@+id/assetEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Asset (e.g. NAS100)"
-            android:inputType="text" />
-
-        <Spinner
-            android:id="@+id/typeSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
-
-        <EditText
-            android:id="@+id/dateEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Date"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/sessionInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Session"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/locationInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Location"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/resultInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Result (Win, Loss, BE)"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/notesInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Notes / reasoning"
-            android:minLines="4"
-            android:gravity="top"
-            android:inputType="textMultiLine" />
-
-        <Button
-            android:id="@+id/voiceReflectionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Add Voice Reflection" />
-
-        <TextView
-            android:id="@+id/activeStrategyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="Active Strategy: Not defined"
-            android:textStyle="bold"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Checklist"
+            android:textColor="#121826"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/noChecklistText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="No checklist defined in Strategy section" />
+            android:text="Capture your execution clearly."
+            android:textColor="#667085"
+            android:textSize="14sp" />
 
-        <LinearLayout
-            android:id="@+id/checklistContainer"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:orientation="vertical" />
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#E5E7EB"
+            app:strokeWidth="1dp">
 
-        <Button
-            android:id="@+id/pickImageButton"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <EditText
+                    android:id="@+id/assetEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="#F9FAFB"
+                    android:hint="Asset (e.g. NAS100)"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:textColor="#121826"
+                    android:textColorHint="#98A2B3" />
+
+                <Spinner
+                    android:id="@+id/typeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" />
+
+                <EditText
+                    android:id="@+id/dateEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#F9FAFB"
+                    android:hint="Date"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:textColor="#121826"
+                    android:textColorHint="#98A2B3" />
+
+                <EditText
+                    android:id="@+id/sessionInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#F9FAFB"
+                    android:hint="Session"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:textColor="#121826"
+                    android:textColorHint="#98A2B3" />
+
+                <EditText
+                    android:id="@+id/locationInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#F9FAFB"
+                    android:hint="Location"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:textColor="#121826"
+                    android:textColorHint="#98A2B3" />
+
+                <EditText
+                    android:id="@+id/resultInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#F9FAFB"
+                    android:hint="Result (Win, Loss, BE)"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:textColor="#121826"
+                    android:textColorHint="#98A2B3" />
+
+                <EditText
+                    android:id="@+id/notesInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="#F9FAFB"
+                    android:gravity="top"
+                    android:hint="Notes / reasoning"
+                    android:minLines="4"
+                    android:padding="16dp"
+                    android:inputType="textMultiLine"
+                    android:textColor="#121826"
+                    android:textColorHint="#98A2B3" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Pick Image from Gallery" />
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#E5E7EB"
+            app:strokeWidth="1dp">
 
-        <Button
-            android:id="@+id/takePhotoButton"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/voiceReflectionButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Add Voice Reflection"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:backgroundTint="#121826"
+                    app:cornerRadius="16dp" />
+
+                <TextView
+                    android:id="@+id/activeStrategyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Active Strategy: Not defined"
+                    android:textColor="#121826"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Checklist"
+                    android:textColor="#121826"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/noChecklistText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="No checklist defined in Strategy section"
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/checklistContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Take Photo" />
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#E5E7EB"
+            app:strokeWidth="1dp">
 
-        <ImageView
-            android:id="@+id/imagePreview"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginTop="12dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
 
-        <Button
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/pickImageButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Pick Image from Gallery"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="16dp"
+                    app:strokeColor="#E5E7EB"
+                    app:strokeWidth="1dp"
+                    android:textColor="#121826" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/takePhotoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Take Photo"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="16dp"
+                    app:strokeColor="#E5E7EB"
+                    app:strokeWidth="1dp"
+                    android:textColor="#121826" />
+
+                <ImageView
+                    android:id="@+id/imagePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="12dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/saveTradeButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Save Trade" />
+            android:layout_height="54dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="20dp"
+            android:text="Save Trade"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:backgroundTint="#121826"
+            app:cornerRadius="18dp" />
 
     </LinearLayout>
-</ScrollView>
+
+</androidx.core.widget.NestedScrollView>

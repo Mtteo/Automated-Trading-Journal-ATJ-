@@ -1,6 +1,5 @@
 package com.example.atj
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,10 +8,11 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.atj.utils.ImageDisplayHelper
 import com.example.atj.utils.ImageStorageHelper
 import com.example.atj.utils.StrategyManager
 
-// Schermata separata dove l'utente definisce la propria strategia una volta sola.
+// Schermata separata dove l'utente definisce la propria strategia.
 class StrategyActivity : AppCompatActivity() {
 
     private lateinit var strategyNameInput: EditText
@@ -25,27 +25,29 @@ class StrategyActivity : AppCompatActivity() {
 
     private var selectedStrategyImagePath: String? = null
 
+    /**
+     * Selezione immagine da galleria.
+     */
     private val pickMediaLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 val savedPath = ImageStorageHelper.copyUriToInternalStorage(this, uri)
                 selectedStrategyImagePath = savedPath
 
-                val bitmap = BitmapFactory.decodeFile(savedPath)
-                strategyImagePreview.setImageBitmap(bitmap)
-                strategyImagePreview.visibility = ImageView.VISIBLE
+                showPreviewImage(savedPath)
             }
         }
 
+    /**
+     * Scatto rapido foto da camera.
+     */
     private val takePicturePreviewLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             if (bitmap != null) {
                 val savedPath = ImageStorageHelper.saveBitmapToInternalStorage(this, bitmap)
                 selectedStrategyImagePath = savedPath
 
-                val previewBitmap = BitmapFactory.decodeFile(savedPath)
-                strategyImagePreview.setImageBitmap(previewBitmap)
-                strategyImagePreview.visibility = ImageView.VISIBLE
+                showPreviewImage(savedPath)
             }
         }
 
@@ -78,6 +80,9 @@ class StrategyActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Carica la strategia già salvata, se presente.
+     */
     private fun loadExistingStrategy() {
         val strategy = StrategyManager.getStrategy(this)
 
@@ -86,15 +91,27 @@ class StrategyActivity : AppCompatActivity() {
         strategyChecklistInput.setText(strategy.checklistItems.joinToString("\n"))
         selectedStrategyImagePath = strategy.imagePath
 
-        if (!strategy.imagePath.isNullOrBlank()) {
-            val bitmap = BitmapFactory.decodeFile(strategy.imagePath)
-            if (bitmap != null) {
-                strategyImagePreview.setImageBitmap(bitmap)
-                strategyImagePreview.visibility = ImageView.VISIBLE
-            }
+        showPreviewImage(strategy.imagePath)
+    }
+
+    /**
+     * Mostra preview immagine con orientamento corretto.
+     */
+    private fun showPreviewImage(imagePath: String?) {
+        val correctedBitmap = ImageDisplayHelper.loadCorrectlyOrientedBitmap(imagePath)
+
+        if (correctedBitmap != null) {
+            strategyImagePreview.setImageBitmap(correctedBitmap)
+            strategyImagePreview.visibility = ImageView.VISIBLE
+        } else {
+            strategyImagePreview.setImageDrawable(null)
+            strategyImagePreview.visibility = ImageView.GONE
         }
     }
 
+    /**
+     * Salva la strategia nei preferences tramite StrategyManager.
+     */
     private fun saveStrategy() {
         val name = strategyNameInput.text.toString().trim()
         val description = strategyDescriptionInput.text.toString().trim()

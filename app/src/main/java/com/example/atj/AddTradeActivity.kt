@@ -2,7 +2,6 @@ package com.example.atj
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
@@ -18,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.atj.utils.ImageDisplayHelper
 import com.example.atj.utils.ImageStorageHelper
 import com.example.atj.utils.LocationHelper
 import com.example.atj.utils.SessionHelper
@@ -45,36 +45,44 @@ class AddTradeActivity : AppCompatActivity() {
     private lateinit var checklistContainer: LinearLayout
     private lateinit var noChecklistText: TextView
 
-    // Nuovo campo visuale per il luogo auto-rilevato
+    // Campo visuale per il luogo auto-rilevato
     private lateinit var locationInput: EditText
 
     private var selectedImagePath: String? = null
     private val checklistCheckBoxes = mutableListOf<CheckBox>()
 
+    /**
+     * Selezione immagine dalla galleria.
+     * Dopo il salvataggio interno, mostriamo l'immagine con orientamento corretto.
+     */
     private val pickMediaLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 val savedPath = ImageStorageHelper.copyUriToInternalStorage(this, uri)
                 selectedImagePath = savedPath
 
-                val bitmap = BitmapFactory.decodeFile(savedPath)
-                imagePreview.setImageBitmap(bitmap)
-                imagePreview.visibility = ImageView.VISIBLE
+                showPreviewImage(savedPath)
             }
         }
 
+    /**
+     * Scatto rapido foto da camera.
+     * Il bitmap ottenuto viene salvato internamente e poi ricaricato
+     * usando la utility di orientamento.
+     */
     private val takePicturePreviewLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             if (bitmap != null) {
                 val savedPath = ImageStorageHelper.saveBitmapToInternalStorage(this, bitmap)
                 selectedImagePath = savedPath
 
-                val previewBitmap = BitmapFactory.decodeFile(savedPath)
-                imagePreview.setImageBitmap(previewBitmap)
-                imagePreview.visibility = ImageView.VISIBLE
+                showPreviewImage(savedPath)
             }
         }
 
+    /**
+     * Launcher per il riconoscimento vocale.
+     */
     private val speechToTextLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -143,20 +151,22 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Prefill automatico dei campi data, sessione e location.
+     */
     private fun prefillAutomaticFields() {
         val now = System.currentTimeMillis()
 
-        // Data automatica iniziale
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         dateEditText.setText(formatter.format(Date(now)))
 
-        // Sessione automatica iniziale
         sessionInput.setText(SessionHelper.getSessionFromTimestamp(now))
-
-        // Luogo automatico iniziale
         locationInput.setText(LocationHelper.getCurrentLocationText(this))
     }
 
+    /**
+     * Disegna la checklist della strategia attiva.
+     */
     private fun renderStrategyChecklist() {
         val strategy = StrategyManager.getStrategy(this)
 
@@ -186,6 +196,24 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Mostra la preview dell'immagine con orientamento corretto.
+     */
+    private fun showPreviewImage(imagePath: String?) {
+        val correctedBitmap = ImageDisplayHelper.loadCorrectlyOrientedBitmap(imagePath)
+
+        if (correctedBitmap != null) {
+            imagePreview.setImageBitmap(correctedBitmap)
+            imagePreview.visibility = ImageView.VISIBLE
+        } else {
+            imagePreview.setImageDrawable(null)
+            imagePreview.visibility = ImageView.GONE
+        }
+    }
+
+    /**
+     * Salva i dati del trade e li restituisce alla MainActivity.
+     */
     private fun saveTrade() {
         val asset = assetEditText.text.toString().trim()
         val type = typeSpinner.selectedItem.toString()
@@ -225,6 +253,9 @@ class AddTradeActivity : AppCompatActivity() {
         finish()
     }
 
+    /**
+     * Avvia il voice-to-text.
+     */
     private fun startVoiceRecognition() {
         try {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -246,6 +277,9 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Appende il testo riconosciuto dentro il campo note.
+     */
     private fun appendVoiceReflectionToNotes(recognizedText: String) {
         val currentNotes = notesInput.text.toString().trim()
 

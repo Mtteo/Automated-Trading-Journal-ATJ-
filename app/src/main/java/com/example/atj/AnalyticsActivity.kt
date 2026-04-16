@@ -7,181 +7,140 @@ import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import com.example.atj.utils.SessionManager
 
+/**
+ * Schermata Analytics semplice ma leggibile.
+ * Calcola statistiche direttamente dai trade dell'utente.
+ */
 class AnalyticsActivity : AppCompatActivity() {
 
-    private lateinit var database: AppDatabase
+    private lateinit var totalTradesValueText: TextView
+    private lateinit var openTradesValueText: TextView
+    private lateinit var closedTradesValueText: TextView
+    private lateinit var winRateValueText: TextView
+    private lateinit var avgConfluenceValueText: TextView
+    private lateinit var bestAssetValueText: TextView
+    private lateinit var bestSessionValueText: TextView
+    private lateinit var sourceBreakdownValueText: TextView
+    private lateinit var assetWinRateValueText: TextView
+    private lateinit var sessionBreakdownValueText: TextView
 
-    private lateinit var totalTradesText: TextView
-    private lateinit var closedTradesText: TextView
-    private lateinit var openTradesText: TextView
-    private lateinit var avgConfluenceScoreText: TextView
-    private lateinit var bestAssetText: TextView
-    private lateinit var bestSessionText: TextView
-    private lateinit var sessionBreakdownText: TextView
-    private lateinit var assetWinRatesText: TextView
-    private lateinit var sessionWinRatesText: TextView
-    private lateinit var sourceBreakdownText: TextView
+    private lateinit var database: AppDatabase
+    private var currentUserId: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (!SessionManager.isLoggedIn(this)) {
-            finish()
-            return
-        }
-
         setContentView(R.layout.activity_analytics)
 
         database = AppDatabase.getDatabase(this)
+        currentUserId = SessionManager.getLoggedInUserId(this)
 
-        totalTradesText = findViewById(R.id.totalTradesAnalyticsText)
-        closedTradesText = findViewById(R.id.closedTradesAnalyticsText)
-        openTradesText = findViewById(R.id.openTradesAnalyticsText)
-        avgConfluenceScoreText = findViewById(R.id.avgConfluenceScoreAnalyticsText)
-        bestAssetText = findViewById(R.id.bestAssetAnalyticsText)
-        bestSessionText = findViewById(R.id.bestSessionAnalyticsText)
-        sessionBreakdownText = findViewById(R.id.sessionBreakdownAnalyticsText)
-        assetWinRatesText = findViewById(R.id.assetWinRatesAnalyticsText)
-        sessionWinRatesText = findViewById(R.id.sessionWinRatesAnalyticsText)
-        sourceBreakdownText = findViewById(R.id.sourceBreakdownAnalyticsText)
-
+        bindViews()
         loadAnalytics()
     }
 
+    private fun bindViews() {
+        totalTradesValueText = findViewById(R.id.totalTradesValueText)
+        openTradesValueText = findViewById(R.id.openTradesValueText)
+        closedTradesValueText = findViewById(R.id.closedTradesValueText)
+        winRateValueText = findViewById(R.id.winRateValueText)
+        avgConfluenceValueText = findViewById(R.id.avgConfluenceValueText)
+        bestAssetValueText = findViewById(R.id.bestAssetValueText)
+        bestSessionValueText = findViewById(R.id.bestSessionValueText)
+        sourceBreakdownValueText = findViewById(R.id.sourceBreakdownValueText)
+        assetWinRateValueText = findViewById(R.id.assetWinRateValueText)
+        sessionBreakdownValueText = findViewById(R.id.sessionBreakdownValueText)
+    }
+
     private fun loadAnalytics() {
-        val currentUserId = SessionManager.getLoggedInUserId(this)
         val trades = database.tradeDao().getTradesByUserId(currentUserId)
 
         val totalTrades = trades.size
-        val closedTrades = trades.filter { isClosedTrade(it) }
-        val openTrades = trades.filter { it.result.trim().lowercase() == "open" }
+        val openTrades = trades.count { it.result.equals("Open", ignoreCase = true) }
+        val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
+        val wins = closedTrades.count { it.result.equals("Win", ignoreCase = true) }
 
-        val avgConfluenceScore = if (trades.isNotEmpty()) {
-            trades.map { it.confluenceScore }.average().toInt()
+        val winRate = if (closedTrades.isNotEmpty()) {
+            (wins * 100) / closedTrades.size
         } else {
             0
         }
 
-        totalTradesText.text = "Total Trades: $totalTrades"
-        closedTradesText.text = "Closed Trades: ${closedTrades.size}"
-        openTradesText.text = "Open Trades: ${openTrades.size}"
-        avgConfluenceScoreText.text = "Average Confluence Score: $avgConfluenceScore%"
-
-        bestAssetText.text = "Best Asset: ${getBestAssetByWinRate(trades)}"
-        bestSessionText.text = "Best Session: ${getBestSessionByWinRate(trades)}"
-
-        sessionBreakdownText.text = buildSessionBreakdown(trades)
-        assetWinRatesText.text = buildAssetWinRates(trades)
-        sessionWinRatesText.text = buildSessionWinRates(trades)
-        sourceBreakdownText.text = buildSourceBreakdown(trades)
-    }
-
-    private fun isClosedTrade(trade: Trade): Boolean {
-        val normalized = trade.result.trim().lowercase()
-        return normalized == "win" || normalized == "loss" || normalized == "be"
-    }
-
-    private fun isWinningTrade(trade: Trade): Boolean {
-        return trade.result.trim().lowercase() == "win"
-    }
-
-    private fun getBestAssetByWinRate(trades: List<Trade>): String {
-        val closedTrades = trades.filter { isClosedTrade(it) }
-        if (closedTrades.isEmpty()) return "No closed trades"
-
-        val grouped = closedTrades.groupBy { it.asset.trim() }
-
-        var bestAsset = "N/A"
-        var bestRate = -1.0
-
-        for ((asset, assetTrades) in grouped) {
-            val wins = assetTrades.count { isWinningTrade(it) }
-            val rate = wins.toDouble() / assetTrades.size.toDouble()
-
-            if (rate > bestRate) {
-                bestRate = rate
-                bestAsset = "$asset (${(rate * 100).toInt()}%)"
-            }
+        val avgConfluence = if (trades.isNotEmpty()) {
+            trades.sumOf { it.confluenceScore } / trades.size
+        } else {
+            0
         }
 
-        return bestAsset
+        totalTradesValueText.text = totalTrades.toString()
+        openTradesValueText.text = openTrades.toString()
+        closedTradesValueText.text = closedTrades.size.toString()
+        winRateValueText.text = "$winRate%"
+        avgConfluenceValueText.text = "$avgConfluence%"
+
+        bestAssetValueText.text = findBestAsset(trades)
+        bestSessionValueText.text = findBestSession(trades)
+        sourceBreakdownValueText.text = buildSourceBreakdown(trades)
+        assetWinRateValueText.text = buildAssetWinRateText(trades)
+        sessionBreakdownValueText.text = buildSessionBreakdownText(trades)
     }
 
-    private fun getBestSessionByWinRate(trades: List<Trade>): String {
-        val closedTrades = trades.filter { isClosedTrade(it) }
-        if (closedTrades.isEmpty()) return "No closed trades"
+    private fun findBestAsset(trades: List<Trade>): String {
+        val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
+        if (closedTrades.isEmpty()) return "No data"
 
-        val grouped = closedTrades.groupBy { it.session.trim() }
-
-        var bestSession = "N/A"
-        var bestRate = -1.0
-
-        for ((session, sessionTrades) in grouped) {
-            val wins = sessionTrades.count { isWinningTrade(it) }
-            val rate = wins.toDouble() / sessionTrades.size.toDouble()
-
-            if (rate > bestRate) {
-                bestRate = rate
-                bestSession = "$session (${(rate * 100).toInt()}%)"
-            }
+        val grouped = closedTrades.groupBy { it.asset }
+        val scored = grouped.mapValues { entry ->
+            val total = entry.value.size
+            val wins = entry.value.count { it.result.equals("Win", ignoreCase = true) }
+            if (total > 0) (wins * 100) / total else 0
         }
 
-        return bestSession
+        val best = scored.maxByOrNull { it.value } ?: return "No data"
+        return "${best.key} (${best.value}%)"
     }
 
-    private fun buildSessionBreakdown(trades: List<Trade>): String {
-        val sydney = trades.count { it.session.trim().equals("Sydney", ignoreCase = true) }
-        val asia = trades.count { it.session.trim().equals("Asia", ignoreCase = true) }
-        val london = trades.count { it.session.trim().equals("London", ignoreCase = true) }
-        val ny = trades.count { it.session.trim().equals("NY", ignoreCase = true) }
+    private fun findBestSession(trades: List<Trade>): String {
+        val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
+        if (closedTrades.isEmpty()) return "No data"
 
-        return """
-            Session Breakdown:
-            - Sydney: $sydney
-            - Asia: $asia
-            - London: $london
-            - NY: $ny
-        """.trimIndent()
-    }
+        val grouped = closedTrades.groupBy { it.session }
+        val scored = grouped.mapValues { entry ->
+            val total = entry.value.size
+            val wins = entry.value.count { it.result.equals("Win", ignoreCase = true) }
+            if (total > 0) (wins * 100) / total else 0
+        }
 
-    private fun buildAssetWinRates(trades: List<Trade>): String {
-        val closedTrades = trades.filter { isClosedTrade(it) }
-        if (closedTrades.isEmpty()) return "Asset Win Rates:\nNo closed trades"
-
-        val grouped = closedTrades.groupBy { it.asset.trim() }
-
-        val lines = grouped.map { (asset, assetTrades) ->
-            val wins = assetTrades.count { isWinningTrade(it) }
-            val rate = (wins * 100) / assetTrades.size
-            "- $asset: $rate% (${assetTrades.size} trades)"
-        }.sorted()
-
-        return "Asset Win Rates:\n" + lines.joinToString("\n")
-    }
-
-    private fun buildSessionWinRates(trades: List<Trade>): String {
-        val closedTrades = trades.filter { isClosedTrade(it) }
-        if (closedTrades.isEmpty()) return "Session Win Rates:\nNo closed trades"
-
-        val grouped = closedTrades.groupBy { it.session.trim() }
-
-        val lines = grouped.map { (session, sessionTrades) ->
-            val wins = sessionTrades.count { isWinningTrade(it) }
-            val rate = (wins * 100) / sessionTrades.size
-            "- $session: $rate% (${sessionTrades.size} trades)"
-        }.sorted()
-
-        return "Session Win Rates:\n" + lines.joinToString("\n")
+        val best = scored.maxByOrNull { it.value } ?: return "No data"
+        return "${best.key} (${best.value}%)"
     }
 
     private fun buildSourceBreakdown(trades: List<Trade>): String {
-        val manualTrades = trades.count { it.source.trim().equals("manual", ignoreCase = true) }
-        val jsonTrades = trades.count { it.source.trim().equals("json", ignoreCase = true) }
+        val manual = trades.count { it.source.equals("manual", ignoreCase = true) }
+        val json = trades.count { it.source.equals("json", ignoreCase = true) }
+        return "Manual: $manual\nJSON: $json"
+    }
 
-        return """
-            Source Breakdown:
-            - Manual: $manualTrades
-            - JSON: $jsonTrades
-        """.trimIndent()
+    private fun buildAssetWinRateText(trades: List<Trade>): String {
+        val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
+        if (closedTrades.isEmpty()) return "No data"
+
+        val grouped = closedTrades.groupBy { it.asset }
+
+        return grouped.entries.joinToString("\n") { entry ->
+            val total = entry.value.size
+            val wins = entry.value.count { it.result.equals("Win", ignoreCase = true) }
+            val rate = if (total > 0) (wins * 100) / total else 0
+            "${entry.key}: $rate% ($wins/$total)"
+        }
+    }
+
+    private fun buildSessionBreakdownText(trades: List<Trade>): String {
+        if (trades.isEmpty()) return "No data"
+
+        val grouped = trades.groupBy { it.session }
+
+        return grouped.entries.joinToString("\n") { entry ->
+            "${entry.key}: ${entry.value.size}"
+        }
     }
 }

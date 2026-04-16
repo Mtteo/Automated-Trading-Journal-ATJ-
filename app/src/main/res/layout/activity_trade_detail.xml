@@ -1,127 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F7F8FC"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Trade Detail"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:paddingBottom="16dp" />
-
-        <TextView
-            android:id="@+id/detailAssetText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Asset:" />
-
-        <TextView
-            android:id="@+id/detailTypeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Type:" />
-
-        <TextView
-            android:id="@+id/detailDateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Date:" />
-
-        <TextView
-            android:id="@+id/detailSessionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Session:" />
-
-        <TextView
-            android:id="@+id/detailLocationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Location:" />
-
-        <TextView
-            android:id="@+id/detailResultText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Result:" />
-
-        <TextView
-            android:id="@+id/detailSourceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Source:" />
-
-        <TextView
-            android:id="@+id/detailStrategyNameText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Strategy:" />
-
-        <TextView
-            android:id="@+id/detailConfluenceScoreText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Confluence Score:" />
-
-        <TextView
-            android:id="@+id/detailCheckedConfluencesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Checked Confluences:" />
-
-        <TextView
-            android:id="@+id/detailNotesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Notes:" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Attached Image:"
+            android:textColor="#121826"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/detailNoImageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="No image attached" />
+            android:layout_marginTop="6dp"
+            android:text="Detailed review of your trade."
+            android:textColor="#667085"
+            android:textSize="14sp" />
 
-        <ImageView
-            android:id="@+id/detailTradeImage"
-            android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:layout_marginTop="8dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/deleteTradeButton"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Delete Trade" />
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#E5E7EB"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:id="@+id/detailAssetText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Asset:"
+                    android:textColor="#121826"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/detailTypeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Type:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailDateText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Date:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailSessionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Session:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailLocationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Location:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailResultText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Result:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailSourceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Source:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailStrategyNameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Strategy:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailConfluenceScoreText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Confluence Score:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailCheckedConfluencesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Checked Confluences:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/detailNotesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Notes:"
+                    android:textColor="#344054"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="#E5E7EB"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Attached Image"
+                    android:textColor="#121826"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/detailNoImageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="No image attached"
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/detailTradeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_marginTop="10dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteTradeButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="20dp"
+            android:text="Delete Trade"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:backgroundTint="#B42318"
+            app:cornerRadius="18dp" />
 
     </LinearLayout>
-</ScrollView>
+
+</androidx.core.widget.NestedScrollView>
