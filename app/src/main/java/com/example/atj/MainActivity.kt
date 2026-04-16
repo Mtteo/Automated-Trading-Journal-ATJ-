@@ -1,7 +1,9 @@
 package com.example.atj
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import com.example.atj.ui.TradeAdapter
+import com.example.atj.utils.NotificationHelper
 import com.example.atj.utils.SessionManager
 import com.example.atj.utils.TradeEventParser
 import com.google.android.material.button.MaterialButton
@@ -19,11 +22,9 @@ import com.google.android.material.button.MaterialButton
 /**
  * Dashboard principale.
  *
- * Obiettivi:
- * - UI più professionale
- * - metriche subito visibili
- * - accesso rapido a Add Trade / Analytics / Strategy / Logout
- * - lista trade recenti
+ * Nota:
+ * per ora la lista trade resta ancora presente nel layout.
+ * Nel prossimo step la togliamo dalla home e la spostiamo in una sezione History dedicata.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -56,6 +57,20 @@ class MainActivity : AppCompatActivity() {
     private var currentUserId: Long = -1L
     private var currentUsername: String = ""
 
+    /**
+     * Launcher per il permesso notifiche su Android 13+.
+     */
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                NotificationHelper.createNotificationChannel(this)
+                NotificationHelper.scheduleAllSessionNotifications(this)
+            }
+        }
+
+    /**
+     * Launcher per AddTradeActivity.
+     */
     private val addTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -68,6 +83,12 @@ class MainActivity : AppCompatActivity() {
                 val resultValue = data.getStringExtra("result") ?: "Open"
                 val notes = data.getStringExtra("notes") ?: ""
 
+                val imagePath = data.getStringExtra("imagePath")
+                val strategyName = data.getStringExtra("strategyName") ?: ""
+                val checkedConfluences = data.getStringExtra("checkedConfluences") ?: ""
+                val confluenceScore = data.getIntExtra("confluenceScore", 0)
+                val locationText = data.getStringExtra("locationText") ?: "Unknown"
+
                 val trade = Trade(
                     userId = currentUserId,
                     asset = asset,
@@ -76,7 +97,12 @@ class MainActivity : AppCompatActivity() {
                     session = session,
                     result = resultValue,
                     notes = notes,
-                    source = "manual"
+                    source = "manual",
+                    imagePath = imagePath,
+                    strategyName = strategyName,
+                    checkedConfluences = checkedConfluences,
+                    confluenceScore = confluenceScore,
+                    locationText = locationText
                 )
 
                 val newId = database.tradeDao().insertTrade(trade)
@@ -84,6 +110,14 @@ class MainActivity : AppCompatActivity() {
 
                 tradeAdapter.addTrade(savedTrade)
                 refreshDashboard()
+
+                // Notifica trade salvato
+                NotificationHelper.showTradeCreatedNotification(
+                    context = this,
+                    asset = trade.asset,
+                    type = trade.type,
+                    source = trade.source
+                )
             }
         }
 
@@ -100,6 +134,9 @@ class MainActivity : AppCompatActivity() {
             openLoginAndClose()
             return
         }
+
+        // Setup notifiche sempre all'avvio della home
+        setupNotifications()
 
         bindViews()
         setupRecyclerView()
@@ -119,6 +156,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshDashboard()
+    }
+
+    /**
+     * Inizializza canale notifiche, richiede eventuale permesso
+     * e programma le notifiche di sessione.
+     */
+    private fun setupNotifications() {
+        NotificationHelper.createNotificationChannel(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationHelper.hasNotificationPermission(this)) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                NotificationHelper.scheduleAllSessionNotifications(this)
+            }
+        } else {
+            NotificationHelper.scheduleAllSessionNotifications(this)
+        }
     }
 
     private fun bindViews() {
@@ -257,6 +312,14 @@ class MainActivity : AppCompatActivity() {
 
         tradeAdapter.addTrade(savedTrade)
         refreshDashboard()
+
+        // Notifica trade simulato salvato
+        NotificationHelper.showTradeCreatedNotification(
+            context = this,
+            asset = parsedTrade.asset,
+            type = parsedTrade.type,
+            source = parsedTrade.source
+        )
     }
 
     private fun openLoginAndClose() {

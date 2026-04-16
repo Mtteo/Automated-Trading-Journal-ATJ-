@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
+import com.example.atj.utils.NotificationHelper
 import com.example.atj.utils.SessionManager
 import java.io.File
 
@@ -85,6 +86,13 @@ class TradeDetailActivity : AppCompatActivity() {
         deleteTradeButton.setOnClickListener {
             currentTrade?.let { trade ->
                 database.tradeDao().deleteTrade(trade)
+
+                // Notifica cancellazione trade
+                NotificationHelper.showTradeDeletedNotification(
+                    context = this,
+                    asset = trade.asset,
+                    type = trade.type
+                )
             }
             finish()
         }
