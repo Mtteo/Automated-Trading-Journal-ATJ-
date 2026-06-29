@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8FC"
+    android:background="#EEF4FA"
     android:fillViewport="true">
 
     <LinearLayout
@@ -16,9 +16,9 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="28dp"
-            app:strokeColor="#E5E7EB"
+            app:cardBackgroundColor="#FDFEFF"
+            app:cardCornerRadius="32dp"
+            app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -31,8 +31,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ATJ"
-                    android:textColor="#121826"
-                    android:textSize="30sp"
+                    android:textColor="#0F172A"
+                    android:textSize="32sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="Automated Trading Journal"
-                    android:textColor="#667085"
+                    android:textColor="#64748B"
                     android:textSize="14sp" />
 
                 <TextView
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="22dp"
                     android:text="Login"
-                    android:textColor="#121826"
+                    android:textColor="#0F172A"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -57,26 +57,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="18dp"
-                    android:background="#F9FAFB"
+                    android:background="#F8FBFF"
                     android:hint="Username"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3"
-                    android:inputType="text" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
 
                 <EditText
                     android:id="@+id/passwordInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F9FAFB"
+                    android:background="#F8FBFF"
                     android:hint="Password"
+                    android:inputType="textPassword"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3"
-                    android:inputType="textPassword" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/loginButton"
@@ -86,8 +86,8 @@
                     android:text="Login"
                     android:textAllCaps="false"
                     android:textStyle="bold"
-                    app:backgroundTint="#121826"
-                    app:cornerRadius="16dp" />
+                    app:backgroundTint="#0F172A"
+                    app:cornerRadius="20dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/registerButton"
@@ -96,11 +96,11 @@
                     android:layout_marginTop="10dp"
                     android:text="Register"
                     android:textAllCaps="false"
-                    android:textColor="#121826"
+                    android:textColor="#0F172A"
                     android:textStyle="bold"
-                    app:backgroundTint="#FFFFFF"
-                    app:cornerRadius="16dp"
-                    app:strokeColor="#E5E7EB"
+                    app:backgroundTint="#F8FBFF"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="#DCE7F2"
                     app:strokeWidth="1dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

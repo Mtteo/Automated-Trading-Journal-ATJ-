@@ -22,6 +22,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /*
+         * LOGIN AUTOMATICO CORRETTO
+         *
+         * Se esiste già una sessione salvata, l'utente entra direttamente.
+         * Non è un bypass: funziona solo se prima è stato fatto login/register.
+         */
         if (SessionManager.isLoggedIn(this)) {
             openMain()
             return
@@ -49,18 +55,7 @@ class LoginActivity : AppCompatActivity() {
         val username = usernameInput.text.toString().trim()
         val password = passwordInput.text.toString().trim()
 
-        if (username.isBlank() || password.isBlank()) {
-            Toast.makeText(this, "Insert username and password", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (username.length < 4) {
-            Toast.makeText(this, "Username must be at least 4 characters", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password.length < 8) {
-            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
+        if (!validateBaseInput(username, password)) {
             return
         }
 
@@ -79,18 +74,7 @@ class LoginActivity : AppCompatActivity() {
         val username = usernameInput.text.toString().trim()
         val password = passwordInput.text.toString().trim()
 
-        if (username.isBlank() || password.isBlank()) {
-            Toast.makeText(this, "Insert username and password", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (username.length < 4) {
-            Toast.makeText(this, "Username must be at least 4 characters", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (password.length < 8) {
-            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
+        if (!validateBaseInput(username, password)) {
             return
         }
 
@@ -107,21 +91,48 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val existingUser = database.userDao().getUserByUsername(username)
+
         if (existingUser != null) {
             Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val newUser = User(username = username, password = password)
+        val newUser = User(
+            username = username,
+            password = password
+        )
+
         val newUserId = database.userDao().insertUser(newUser)
 
         SessionManager.saveLogin(this, newUserId, username)
+
         Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+
         openMain()
     }
 
+    private fun validateBaseInput(username: String, password: String): Boolean {
+        if (username.isBlank() || password.isBlank()) {
+            Toast.makeText(this, "Insert username and password", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (username.length < 4) {
+            Toast.makeText(this, "Username must be at least 4 characters", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (password.length < 8) {
+            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
     private fun openMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
         finish()
     }
 }

@@ -14,15 +14,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-/**
- * Nuova schermata Analytics / Journal Workspace.
- *
- * Obiettivi:
- * - rendere la seconda schermata più simile a una workspace web app
- * - mostrare metriche importanti in alto
- * - mostrare il calendario mensile con esiti giornalieri
- * - ridurre l'effetto "lista lunga e brutta"
- */
 class AnalyticsActivity : AppCompatActivity() {
 
     private lateinit var monthTitleText: TextView
@@ -85,10 +76,8 @@ class AnalyticsActivity : AppCompatActivity() {
         val trades = database.tradeDao().getTradesByUserId(currentUserId)
 
         val totalTrades = trades.size
-        val openTrades = trades.count { it.result.equals("Open", ignoreCase = true) }
         val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
         val wins = closedTrades.count { it.result.equals("Win", ignoreCase = true) }
-        val losses = closedTrades.count { it.result.equals("Loss", ignoreCase = true) }
 
         val winRate = if (closedTrades.isNotEmpty()) {
             (wins * 100) / closedTrades.size
@@ -102,28 +91,23 @@ class AnalyticsActivity : AppCompatActivity() {
             0
         }
 
-        val performanceBalance = wins - losses
+        val monthlyPnl = trades.sumOf { it.pnlAmount }
 
         monthTitleText.text = getCurrentMonthLabel()
         monthSubtitleText.text = if (totalTrades == 0) {
             "No trades saved yet."
         } else {
-            "$totalTrades total • $openTrades open • ${closedTrades.size} closed"
+            "$totalTrades trades tracked"
         }
 
         totalTradesValueText.text = totalTrades.toString()
         winRateValueText.text = "$winRate%"
-
-        performanceBalanceValueText.text = when {
-            performanceBalance > 0 -> "+$performanceBalance"
-            else -> performanceBalance.toString()
-        }
-
-        performanceBalanceLabelText.text = "Win/Loss balance"
+        performanceBalanceValueText.text = String.format(Locale.getDefault(), "%.2f", monthlyPnl)
+        performanceBalanceLabelText.text = "Net PnL"
 
         avgConfluenceValueText.text = "$avgConfluence%"
-        bestAssetValueText.text = findBestAsset(trades)
-        bestSessionValueText.text = findBestSession(trades)
+        bestAssetValueText.text = findBestAssetByPnl(trades)
+        bestSessionValueText.text = findBestSessionByPnl(trades)
         sourceBreakdownValueText.text = buildSourceBreakdown(trades)
         sessionBreakdownValueText.text = buildSessionBreakdownText(trades)
 
@@ -131,10 +115,6 @@ class AnalyticsActivity : AppCompatActivity() {
         calendarAdapter.replaceItems(calendarItems)
     }
 
-    /**
-     * Costruisce il calendario del mese corrente.
-     * Ogni cella rappresenta un giorno del mese.
-     */
     private fun buildCalendarItemsForCurrentMonth(trades: List<Trade>): List<CalendarDayUiModel> {
         val calendarItems = mutableListOf<CalendarDayUiModel>()
 
@@ -150,8 +130,6 @@ class AnalyticsActivity : AppCompatActivity() {
 
         val daysInMonth = firstDayCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        // Convertiamo la settimana in formato Monday-first:
-        // Calendar.SUNDAY = 1 ... SATURDAY = 7
         val dayOfWeek = firstDayCalendar.get(Calendar.DAY_OF_WEEK)
         val mondayFirstOffset = when (dayOfWeek) {
             Calendar.MONDAY -> 0
@@ -164,18 +142,12 @@ class AnalyticsActivity : AppCompatActivity() {
             else -> 0
         }
 
-        // Celle vuote iniziali
         repeat(mondayFirstOffset) {
             calendarItems.add(
-                CalendarDayUiModel(
-                    dayNumber = "",
-                    dayInfo = "",
-                    status = CalendarDayUiModel.Status.EMPTY
-                )
+                CalendarDayUiModel("", "", CalendarDayUiModel.Status.EMPTY)
             )
         }
 
-        // Raggruppiamo i trade del mese corrente per giorno
         val monthTradesByDay = trades
             .filter { isTradeInCurrentMonth(it, year, month) }
             .groupBy { extractDayOfMonth(it) }
@@ -183,11 +155,7 @@ class AnalyticsActivity : AppCompatActivity() {
         for (day in 1..daysInMonth) {
             val dayTrades = monthTradesByDay[day].orEmpty()
             val status = determineDayStatus(dayTrades)
-
-            val infoText = when {
-                dayTrades.isEmpty() -> ""
-                else -> "${dayTrades.size}T"
-            }
+            val infoText = if (dayTrades.isEmpty()) "" else String.format(Locale.getDefault(), "%.0f", dayTrades.sumOf { it.pnlAmount })
 
             calendarItems.add(
                 CalendarDayUiModel(
@@ -201,27 +169,17 @@ class AnalyticsActivity : AppCompatActivity() {
         return calendarItems
     }
 
-    /**
-     * Determina lo stato visivo del giorno:
-     * - WIN: solo win
-     * - LOSS: solo loss
-     * - MIXED: win e loss insieme
-     * - OPEN: solo open
-     * - NONE: nessun trade
-     */
     private fun determineDayStatus(dayTrades: List<Trade>): CalendarDayUiModel.Status {
         if (dayTrades.isEmpty()) return CalendarDayUiModel.Status.NONE
 
-        val hasWin = dayTrades.any { it.result.equals("Win", ignoreCase = true) }
-        val hasLoss = dayTrades.any { it.result.equals("Loss", ignoreCase = true) }
+        val totalPnl = dayTrades.sumOf { it.pnlAmount }
         val hasOnlyOpen = dayTrades.all { it.result.equals("Open", ignoreCase = true) }
 
         return when {
             hasOnlyOpen -> CalendarDayUiModel.Status.OPEN
-            hasWin && hasLoss -> CalendarDayUiModel.Status.MIXED
-            hasWin -> CalendarDayUiModel.Status.WIN
-            hasLoss -> CalendarDayUiModel.Status.LOSS
-            else -> CalendarDayUiModel.Status.NONE
+            totalPnl > 0 -> CalendarDayUiModel.Status.WIN
+            totalPnl < 0 -> CalendarDayUiModel.Status.LOSS
+            else -> CalendarDayUiModel.Status.MIXED
         }
     }
 
@@ -236,11 +194,6 @@ class AnalyticsActivity : AppCompatActivity() {
         return calendar.get(Calendar.DAY_OF_MONTH)
     }
 
-    /**
-     * Supporta i formati più probabili del progetto:
-     * - yyyy-MM-dd HH:mm
-     * - yyyy-MM-dd
-     */
     private fun parseTradeDateToCalendar(dateText: String): Calendar? {
         val formats = listOf(
             SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()),
@@ -267,34 +220,20 @@ class AnalyticsActivity : AppCompatActivity() {
         }
     }
 
-    private fun findBestAsset(trades: List<Trade>): String {
-        val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
-        if (closedTrades.isEmpty()) return "No data"
-
-        val grouped = closedTrades.groupBy { it.asset }
-        val scored = grouped.mapValues { entry ->
-            val total = entry.value.size
-            val wins = entry.value.count { it.result.equals("Win", ignoreCase = true) }
-            if (total > 0) (wins * 100) / total else 0
-        }
-
-        val best = scored.maxByOrNull { it.value } ?: return "No data"
-        return "${best.key} (${best.value}%)"
+    private fun findBestAssetByPnl(trades: List<Trade>): String {
+        if (trades.isEmpty()) return "No data"
+        val grouped = trades.groupBy { it.asset }
+        val best = grouped.maxByOrNull { entry -> entry.value.sumOf { it.pnlAmount } } ?: return "No data"
+        val pnl = best.value.sumOf { it.pnlAmount }
+        return "${best.key} (${String.format(Locale.getDefault(), "%.2f", pnl)})"
     }
 
-    private fun findBestSession(trades: List<Trade>): String {
-        val closedTrades = trades.filter { !it.result.equals("Open", ignoreCase = true) }
-        if (closedTrades.isEmpty()) return "No data"
-
-        val grouped = closedTrades.groupBy { it.session }
-        val scored = grouped.mapValues { entry ->
-            val total = entry.value.size
-            val wins = entry.value.count { it.result.equals("Win", ignoreCase = true) }
-            if (total > 0) (wins * 100) / total else 0
-        }
-
-        val best = scored.maxByOrNull { it.value } ?: return "No data"
-        return "${best.key} (${best.value}%)"
+    private fun findBestSessionByPnl(trades: List<Trade>): String {
+        if (trades.isEmpty()) return "No data"
+        val grouped = trades.groupBy { it.session }
+        val best = grouped.maxByOrNull { entry -> entry.value.sumOf { it.pnlAmount } } ?: return "No data"
+        val pnl = best.value.sumOf { it.pnlAmount }
+        return "${best.key} (${String.format(Locale.getDefault(), "%.2f", pnl)})"
     }
 
     private fun buildSourceBreakdown(trades: List<Trade>): String {
@@ -305,10 +244,9 @@ class AnalyticsActivity : AppCompatActivity() {
 
     private fun buildSessionBreakdownText(trades: List<Trade>): String {
         if (trades.isEmpty()) return "No data"
-
         val grouped = trades.groupBy { it.session }
         return grouped.entries.joinToString(" • ") { entry ->
-            "${entry.key} ${entry.value.size}"
+            "${entry.key} ${String.format(Locale.getDefault(), "%.2f", entry.value.sumOf { it.pnlAmount })}"
         }
     }
 }

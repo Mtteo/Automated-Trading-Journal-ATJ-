@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8FC"
+    android:background="#EEF4FA"
     android:fillViewport="true">
 
     <LinearLayout
@@ -16,25 +16,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add New Trade"
-            android:textColor="#121826"
-            android:textSize="28sp"
+            android:textColor="#0F172A"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Capture your execution clearly."
-            android:textColor="#667085"
+            android:text="Capture execution with structure and context."
+            android:textColor="#64748B"
             android:textSize="14sp" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="24dp"
-            app:strokeColor="#E5E7EB"
+            app:cardBackgroundColor="#FDFEFF"
+            app:cardCornerRadius="28dp"
+            app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -47,16 +47,22 @@
                     android:id="@+id/assetEditText"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="#F9FAFB"
+                    android:background="#F8FBFF"
                     android:hint="Asset (e.g. NAS100)"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
 
                 <Spinner
                     android:id="@+id/typeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" />
+
+                <Spinner
+                    android:id="@+id/directionSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp" />
@@ -66,66 +72,52 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F9FAFB"
+                    android:background="#F8FBFF"
                     android:hint="Date"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
 
                 <EditText
                     android:id="@+id/sessionInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F9FAFB"
+                    android:background="#F8FBFF"
                     android:hint="Session"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
 
                 <EditText
                     android:id="@+id/locationInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F9FAFB"
+                    android:background="#F8FBFF"
                     android:hint="Location"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
 
                 <EditText
                     android:id="@+id/resultInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F9FAFB"
-                    android:hint="Result (Win, Loss, BE)"
+                    android:background="#F8FBFF"
+                    android:hint="Result (Open, Win, Loss, BE)"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3" />
-
-                <EditText
-                    android:id="@+id/notesInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:background="#F9FAFB"
-                    android:gravity="top"
-                    android:hint="Notes / reasoning"
-                    android:minLines="4"
-                    android:padding="16dp"
-                    android:inputType="textMultiLine"
-                    android:textColor="#121826"
-                    android:textColorHint="#98A2B3" />
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -133,9 +125,149 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="24dp"
-            app:strokeColor="#E5E7EB"
+            app:cardBackgroundColor="#FDFEFF"
+            app:cardCornerRadius="28dp"
+            app:strokeColor="#DCE7F2"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <EditText
+                    android:id="@+id/entryPriceInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="#F8FBFF"
+                    android:hint="Entry price"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/exitPriceInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="Exit price"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/stopLossInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="Stop loss"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/takeProfitInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="Take profit"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/rrInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="RR"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/positionValueInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="Position value"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/positionPercentInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="% of account used"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/accountValueInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="Account value"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/pnlAmountInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="PnL amount"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/pnlPercentInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#F8FBFF"
+                    android:hint="PnL %"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+                <EditText
+                    android:id="@+id/notesInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="#F8FBFF"
+                    android:gravity="top"
+                    android:hint="Notes / reasoning"
+                    android:inputType="textMultiLine"
+                    android:minLines="4"
+                    android:padding="16dp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="#FDFEFF"
+            app:cardCornerRadius="28dp"
+            app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -151,8 +283,8 @@
                     android:text="Add Voice Reflection"
                     android:textAllCaps="false"
                     android:textStyle="bold"
-                    app:backgroundTint="#121826"
-                    app:cornerRadius="16dp" />
+                    app:backgroundTint="#0F172A"
+                    app:cornerRadius="18dp" />
 
                 <TextView
                     android:id="@+id/activeStrategyText"
@@ -160,7 +292,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Active Strategy: Not defined"
-                    android:textColor="#121826"
+                    android:textColor="#0F172A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -169,7 +301,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Checklist"
-                    android:textColor="#121826"
+                    android:textColor="#0F172A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -179,7 +311,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="No checklist defined in Strategy section"
-                    android:textColor="#667085"
+                    android:textColor="#64748B"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -195,9 +327,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="24dp"
-            app:strokeColor="#E5E7EB"
+            app:cardBackgroundColor="#FDFEFF"
+            app:cardCornerRadius="28dp"
+            app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -212,12 +344,12 @@
                     android:layout_height="50dp"
                     android:text="Pick Image from Gallery"
                     android:textAllCaps="false"
+                    android:textColor="#0F172A"
                     android:textStyle="bold"
-                    app:backgroundTint="#FFFFFF"
-                    app:cornerRadius="16dp"
-                    app:strokeColor="#E5E7EB"
-                    app:strokeWidth="1dp"
-                    android:textColor="#121826" />
+                    app:backgroundTint="#F8FBFF"
+                    app:cornerRadius="18dp"
+                    app:strokeColor="#DCE7F2"
+                    app:strokeWidth="1dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/takePhotoButton"
@@ -226,12 +358,12 @@
                     android:layout_marginTop="10dp"
                     android:text="Take Photo"
                     android:textAllCaps="false"
+                    android:textColor="#0F172A"
                     android:textStyle="bold"
-                    app:backgroundTint="#FFFFFF"
-                    app:cornerRadius="16dp"
-                    app:strokeColor="#E5E7EB"
-                    app:strokeWidth="1dp"
-                    android:textColor="#121826" />
+                    app:backgroundTint="#F8FBFF"
+                    app:cornerRadius="18dp"
+                    app:strokeColor="#DCE7F2"
+                    app:strokeWidth="1dp" />
 
                 <ImageView
                     android:id="@+id/imagePreview"
@@ -253,8 +385,8 @@
             android:text="Save Trade"
             android:textAllCaps="false"
             android:textStyle="bold"
-            app:backgroundTint="#121826"
-            app:cornerRadius="18dp" />
+            app:backgroundTint="#0F172A"
+            app:cornerRadius="20dp" />
 
     </LinearLayout>
 

@@ -30,11 +30,23 @@ class AddTradeActivity : AppCompatActivity() {
 
     private lateinit var assetEditText: EditText
     private lateinit var typeSpinner: Spinner
+    private lateinit var directionSpinner: Spinner
     private lateinit var dateEditText: EditText
     private lateinit var sessionInput: EditText
     private lateinit var resultInput: EditText
     private lateinit var notesInput: EditText
     private lateinit var saveTradeButton: Button
+
+    private lateinit var entryPriceInput: EditText
+    private lateinit var exitPriceInput: EditText
+    private lateinit var stopLossInput: EditText
+    private lateinit var takeProfitInput: EditText
+    private lateinit var rrInput: EditText
+    private lateinit var positionValueInput: EditText
+    private lateinit var positionPercentInput: EditText
+    private lateinit var accountValueInput: EditText
+    private lateinit var pnlAmountInput: EditText
+    private lateinit var pnlPercentInput: EditText
 
     private lateinit var pickImageButton: Button
     private lateinit var takePhotoButton: Button
@@ -44,49 +56,35 @@ class AddTradeActivity : AppCompatActivity() {
     private lateinit var activeStrategyText: TextView
     private lateinit var checklistContainer: LinearLayout
     private lateinit var noChecklistText: TextView
-
-    // Campo visuale per il luogo auto-rilevato
     private lateinit var locationInput: EditText
 
     private var selectedImagePath: String? = null
+    private var isEditMode: Boolean = false
     private val checklistCheckBoxes = mutableListOf<CheckBox>()
 
-    /**
-     * Selezione immagine dalla galleria.
-     * Dopo il salvataggio interno, mostriamo l'immagine con orientamento corretto.
-     */
     private val pickMediaLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 val savedPath = ImageStorageHelper.copyUriToInternalStorage(this, uri)
                 selectedImagePath = savedPath
-
                 showPreviewImage(savedPath)
             }
         }
 
-    /**
-     * Scatto rapido foto da camera.
-     * Il bitmap ottenuto viene salvato internamente e poi ricaricato
-     * usando la utility di orientamento.
-     */
     private val takePicturePreviewLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             if (bitmap != null) {
                 val savedPath = ImageStorageHelper.saveBitmapToInternalStorage(this, bitmap)
                 selectedImagePath = savedPath
-
                 showPreviewImage(savedPath)
             }
         }
 
-    /**
-     * Launcher per il riconoscimento vocale.
-     */
     private val speechToTextLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val spokenResults = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                val spokenResults =
+                    result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
 
                 if (!spokenResults.isNullOrEmpty()) {
                     val recognizedText = spokenResults[0].trim()
@@ -102,35 +100,19 @@ class AddTradeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_trade)
 
-        assetEditText = findViewById(R.id.assetEditText)
-        typeSpinner = findViewById(R.id.typeSpinner)
-        dateEditText = findViewById(R.id.dateEditText)
-        sessionInput = findViewById(R.id.sessionInput)
-        resultInput = findViewById(R.id.resultInput)
-        notesInput = findViewById(R.id.notesInput)
-        saveTradeButton = findViewById(R.id.saveTradeButton)
+        isEditMode = intent.getBooleanExtra("edit_mode", false)
 
-        pickImageButton = findViewById(R.id.pickImageButton)
-        takePhotoButton = findViewById(R.id.takePhotoButton)
-        imagePreview = findViewById(R.id.imagePreview)
-        voiceReflectionButton = findViewById(R.id.voiceReflectionButton)
-
-        activeStrategyText = findViewById(R.id.activeStrategyText)
-        checklistContainer = findViewById(R.id.checklistContainer)
-        noChecklistText = findViewById(R.id.noChecklistText)
-        locationInput = findViewById(R.id.locationInput)
-
-        val tradeTypes = listOf("Buy", "Sell")
-        val spinnerAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            tradeTypes
-        )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        typeSpinner.adapter = spinnerAdapter
-
+        bindViews()
+        setupSpinners()
         prefillAutomaticFields()
         renderStrategyChecklist()
+
+        if (isEditMode) {
+            populateFieldsFromIntent()
+            saveTradeButton.text = "Update Trade"
+        } else {
+            saveTradeButton.text = "Save Trade"
+        }
 
         pickImageButton.setOnClickListener {
             pickMediaLauncher.launch(
@@ -151,9 +133,59 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Prefill automatico dei campi data, sessione e location.
-     */
+    private fun bindViews() {
+        assetEditText = findViewById(R.id.assetEditText)
+        typeSpinner = findViewById(R.id.typeSpinner)
+        directionSpinner = findViewById(R.id.directionSpinner)
+        dateEditText = findViewById(R.id.dateEditText)
+        sessionInput = findViewById(R.id.sessionInput)
+        resultInput = findViewById(R.id.resultInput)
+        notesInput = findViewById(R.id.notesInput)
+        saveTradeButton = findViewById(R.id.saveTradeButton)
+
+        entryPriceInput = findViewById(R.id.entryPriceInput)
+        exitPriceInput = findViewById(R.id.exitPriceInput)
+        stopLossInput = findViewById(R.id.stopLossInput)
+        takeProfitInput = findViewById(R.id.takeProfitInput)
+        rrInput = findViewById(R.id.rrInput)
+        positionValueInput = findViewById(R.id.positionValueInput)
+        positionPercentInput = findViewById(R.id.positionPercentInput)
+        accountValueInput = findViewById(R.id.accountValueInput)
+        pnlAmountInput = findViewById(R.id.pnlAmountInput)
+        pnlPercentInput = findViewById(R.id.pnlPercentInput)
+
+        pickImageButton = findViewById(R.id.pickImageButton)
+        takePhotoButton = findViewById(R.id.takePhotoButton)
+        imagePreview = findViewById(R.id.imagePreview)
+        voiceReflectionButton = findViewById(R.id.voiceReflectionButton)
+
+        activeStrategyText = findViewById(R.id.activeStrategyText)
+        checklistContainer = findViewById(R.id.checklistContainer)
+        noChecklistText = findViewById(R.id.noChecklistText)
+        locationInput = findViewById(R.id.locationInput)
+    }
+
+    private fun setupSpinners() {
+        val tradeTypes = listOf("Buy", "Sell")
+        val directionTypes = listOf("Long", "Short")
+
+        val typeAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            tradeTypes
+        )
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        typeSpinner.adapter = typeAdapter
+
+        val directionAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            directionTypes
+        )
+        directionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        directionSpinner.adapter = directionAdapter
+    }
+
     private fun prefillAutomaticFields() {
         val now = System.currentTimeMillis()
 
@@ -164,9 +196,69 @@ class AddTradeActivity : AppCompatActivity() {
         locationInput.setText(LocationHelper.getCurrentLocationText(this))
     }
 
-    /**
-     * Disegna la checklist della strategia attiva.
-     */
+    private fun populateFieldsFromIntent() {
+        assetEditText.setText(intent.getStringExtra("asset") ?: "")
+        dateEditText.setText(intent.getStringExtra("date") ?: "")
+        sessionInput.setText(intent.getStringExtra("session") ?: "")
+        resultInput.setText(intent.getStringExtra("result") ?: "Open")
+        notesInput.setText(intent.getStringExtra("notes") ?: "")
+        locationInput.setText(intent.getStringExtra("locationText") ?: "Unknown")
+
+        entryPriceInput.setText(doubleToInput(intent.getDoubleExtra("entryPrice", 0.0)))
+        exitPriceInput.setText(doubleToInput(intent.getDoubleExtra("exitPrice", 0.0)))
+        stopLossInput.setText(doubleToInput(intent.getDoubleExtra("stopLoss", 0.0)))
+        takeProfitInput.setText(doubleToInput(intent.getDoubleExtra("takeProfit", 0.0)))
+        rrInput.setText(doubleToInput(intent.getDoubleExtra("rr", 0.0)))
+        positionValueInput.setText(doubleToInput(intent.getDoubleExtra("positionValue", 0.0)))
+        positionPercentInput.setText(
+            doubleToInput(intent.getDoubleExtra("positionPercentOfAccount", 0.0))
+        )
+        accountValueInput.setText(doubleToInput(intent.getDoubleExtra("accountValue", 0.0)))
+        pnlAmountInput.setText(doubleToInput(intent.getDoubleExtra("pnlAmount", 0.0)))
+        pnlPercentInput.setText(doubleToInput(intent.getDoubleExtra("pnlPercent", 0.0)))
+
+        val type = intent.getStringExtra("type") ?: "Buy"
+        val direction = intent.getStringExtra("direction") ?: "Long"
+
+        setSpinnerSelection(typeSpinner, type)
+        setSpinnerSelection(directionSpinner, direction)
+
+        selectedImagePath = intent.getStringExtra("imagePath")
+        showPreviewImage(selectedImagePath)
+
+        val checkedConfluences = intent.getStringExtra("checkedConfluences") ?: ""
+        restoreChecklistChecks(checkedConfluences)
+    }
+
+    private fun setSpinnerSelection(spinner: Spinner, value: String) {
+        for (i in 0 until spinner.count) {
+            val item = spinner.getItemAtPosition(i).toString()
+            if (item.equals(value, ignoreCase = true)) {
+                spinner.setSelection(i)
+                return
+            }
+        }
+    }
+
+    private fun restoreChecklistChecks(checkedConfluences: String) {
+        if (checkedConfluences.isBlank()) return
+
+        val checkedItems = checkedConfluences
+            .split(",")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+
+        checklistCheckBoxes.forEach { checkBox ->
+            checkBox.isChecked = checkedItems.any {
+                it.equals(checkBox.text.toString(), ignoreCase = true)
+            }
+        }
+    }
+
+    private fun doubleToInput(value: Double): String {
+        return if (value == 0.0) "" else value.toString()
+    }
+
     private fun renderStrategyChecklist() {
         val strategy = StrategyManager.getStrategy(this)
 
@@ -196,9 +288,6 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Mostra la preview dell'immagine con orientamento corretto.
-     */
     private fun showPreviewImage(imagePath: String?) {
         val correctedBitmap = ImageDisplayHelper.loadCorrectlyOrientedBitmap(imagePath)
 
@@ -211,51 +300,85 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Salva i dati del trade e li restituisce alla MainActivity.
-     */
     private fun saveTrade() {
         val asset = assetEditText.text.toString().trim()
         val type = typeSpinner.selectedItem.toString()
+        val direction = directionSpinner.selectedItem.toString()
         val date = dateEditText.text.toString().trim()
         val session = sessionInput.text.toString().trim()
-        val result = resultInput.text.toString().trim()
+        val result = resultInput.text.toString().trim().ifBlank { "Open" }
         val notes = notesInput.text.toString().trim()
-        val locationText = locationInput.text.toString().trim()
+        val locationText = locationInput.text.toString().trim().ifBlank { "Unknown" }
+
+        if (asset.isBlank()) {
+            Toast.makeText(this, "Insert asset", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (date.isBlank()) {
+            Toast.makeText(this, "Insert date", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val strategy = StrategyManager.getStrategy(this)
+
         val checkedItems = checklistCheckBoxes
             .filter { it.isChecked }
             .map { it.text.toString() }
 
+        val oldStrategyName = intent.getStringExtra("strategyName") ?: ""
+        val oldCheckedConfluences = intent.getStringExtra("checkedConfluences") ?: ""
+        val oldConfluenceScore = intent.getIntExtra("confluenceScore", 0)
+
+        val finalStrategyName = if (strategy.name.isNotBlank()) {
+            strategy.name
+        } else {
+            oldStrategyName
+        }
+
+        val finalCheckedConfluences = if (checkedItems.isNotEmpty()) {
+            checkedItems.joinToString(", ")
+        } else {
+            oldCheckedConfluences
+        }
+
         val totalItems = checklistCheckBoxes.size
-        val confluenceScore = if (totalItems > 0) {
+        val finalConfluenceScore = if (totalItems > 0) {
             (checkedItems.size * 100) / totalItems
         } else {
-            0
+            oldConfluenceScore
         }
 
         val resultIntent = Intent().apply {
             putExtra("asset", asset)
             putExtra("type", type)
+            putExtra("direction", direction)
             putExtra("date", date)
             putExtra("session", session)
             putExtra("result", result)
             putExtra("notes", notes)
             putExtra("imagePath", selectedImagePath)
-            putExtra("strategyName", strategy.name)
-            putExtra("checkedConfluences", checkedItems.joinToString(", "))
-            putExtra("confluenceScore", confluenceScore)
+            putExtra("strategyName", finalStrategyName)
+            putExtra("checkedConfluences", finalCheckedConfluences)
+            putExtra("confluenceScore", finalConfluenceScore)
             putExtra("locationText", locationText)
+
+            putExtra("entryPrice", entryPriceInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("exitPrice", exitPriceInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("stopLoss", stopLossInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("takeProfit", takeProfitInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("rr", rrInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("positionValue", positionValueInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("positionPercentOfAccount", positionPercentInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("accountValue", accountValueInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("pnlAmount", pnlAmountInput.text.toString().toDoubleOrNull() ?: 0.0)
+            putExtra("pnlPercent", pnlPercentInput.text.toString().toDoubleOrNull() ?: 0.0)
         }
 
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }
 
-    /**
-     * Avvia il voice-to-text.
-     */
     private fun startVoiceRecognition() {
         try {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -277,9 +400,6 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Appende il testo riconosciuto dentro il campo note.
-     */
     private fun appendVoiceReflectionToNotes(recognizedText: String) {
         val currentNotes = notesInput.text.toString().trim()
 
