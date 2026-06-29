@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="22dp"
-                    android:text="Welcome back"
+                    android:text="Create your account"
                     android:textColor="#0F172A"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -57,12 +57,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Log in to access your personal trading journal."
+                    android:text="Start with an empty journal, or use username demo for the exam demo profile."
                     android:textColor="#64748B"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/usernameInput"
+                    android:id="@+id/registerUsernameInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="20dp"
@@ -75,7 +75,7 @@
                     android:textColorHint="#94A3B8" />
 
                 <EditText
-                    android:id="@+id/passwordInput"
+                    android:id="@+id/registerPasswordInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
@@ -87,38 +87,44 @@
                     android:textColor="#0F172A"
                     android:textColorHint="#94A3B8" />
 
+                <EditText
+                    android:id="@+id/registerConfirmPasswordInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#F8FBFF"
+                    android:hint="Confirm password"
+                    android:inputType="textPassword"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#94A3B8" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Password: at least 8 characters, one letter and one number."
+                    android:textColor="#64748B"
+                    android:textSize="12sp" />
+
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/loginButton"
+                    android:id="@+id/createAccountButton"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="18dp"
-                    android:text="Login"
+                    android:text="Create account"
                     android:textAllCaps="false"
                     android:textStyle="bold"
                     app:backgroundTint="#0F172A"
                     app:cornerRadius="20dp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="20dp"
-                    android:background="#E2E8F0" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:gravity="center"
-                    android:text="New on ATJ?"
-                    android:textColor="#64748B"
-                    android:textSize="14sp" />
-
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/registerButton"
+                    android:id="@+id/backToLoginButton"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="10dp"
-                    android:text="Create account"
+                    android:text="Back to login"
                     android:textAllCaps="false"
                     android:textColor="#0F172A"
                     android:textStyle="bold"

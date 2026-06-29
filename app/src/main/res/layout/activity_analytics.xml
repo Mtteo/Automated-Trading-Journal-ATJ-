@@ -12,29 +12,12 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Journal Workspace"
-            android:textColor="#0F172A"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/monthSubtitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Performance snapshot"
-            android:textColor="#64748B"
-            android:textSize="14sp" />
-
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
             app:cardBackgroundColor="#0F172A"
             app:cardCornerRadius="30dp"
+            app:cardElevation="3dp"
             app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
@@ -42,20 +25,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="22dp">
 
                 <TextView
                     android:id="@+id/monthTitleText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Aprile 2026"
+                    android:text="Journal Workspace"
+                    android:textColor="#FFFFFF"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/monthSubtitleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Performance snapshot"
                     android:textColor="#CBD5E1"
-                    android:textSize="13sp" />
+                    android:textSize="14sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="18dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -124,7 +117,7 @@
                             android:id="@+id/performanceBalanceLabelText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Win/Loss balance"
+                            android:text="Net PnL"
                             android:textColor="#94A3B8"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -132,6 +125,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- BESTS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -141,16 +135,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="18dp">
 
@@ -179,16 +175,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="18dp">
 
@@ -212,12 +210,14 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
+        <!-- CALENDAR -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
@@ -243,86 +243,16 @@
                     android:textColor="#64748B"
                     android:textSize="13sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:orientation="horizontal"
-                    android:weightSum="7">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="M"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="T"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="W"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="T"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="F"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="S"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="S"
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/calendarRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="14dp"
                     android:nestedScrollingEnabled="false" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- DETAILS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -332,16 +262,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="18dp">
 
@@ -370,16 +302,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="18dp">
 
@@ -408,8 +342,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="24dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 

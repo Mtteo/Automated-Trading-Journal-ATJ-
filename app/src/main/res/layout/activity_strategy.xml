@@ -12,28 +12,46 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Strategy"
-            android:textColor="#0F172A"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            app:cardBackgroundColor="#0F172A"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="3dp"
+            app:strokeColor="#1E293B"
+            app:strokeWidth="1dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Define your model with clarity and consistency."
-            android:textColor="#64748B"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Strategy"
+                    android:textColor="#FFFFFF"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Define the model you want every trade to respect."
+                    android:textColor="#CBD5E1"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
@@ -73,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Checklist items (one per line)"
+                    android:text="Checklist items"
                     android:textColor="#0F172A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -85,7 +103,7 @@
                     android:layout_marginTop="8dp"
                     android:background="#F8FBFF"
                     android:gravity="top"
-                    android:hint="Liquidity sweep&#10;SMT divergence&#10;BOS confirmation"
+                    android:hint="Liquidity sweep&#10;BOS confirmation&#10;RR above 1.5"
                     android:inputType="textMultiLine"
                     android:minLines="6"
                     android:padding="16dp"
@@ -98,8 +116,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 

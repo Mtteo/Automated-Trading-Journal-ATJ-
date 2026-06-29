@@ -15,25 +15,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add New Trade"
+            android:text="Trade Editor"
             android:textColor="#0F172A"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Capture execution with structure and context."
+            android:text="Capture execution, context, confluences and review notes."
             android:textColor="#64748B"
             android:textSize="14sp" />
 
+        <!-- BASIC INFO -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
@@ -43,10 +45,19 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Execution"
+                    android:textColor="#0F172A"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/assetEditText"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
+                    android:layout_marginTop="14dp"
                     android:background="#F8FBFF"
                     android:hint="Asset (e.g. NAS100)"
                     android:inputType="text"
@@ -58,13 +69,13 @@
                 <Spinner
                     android:id="@+id/typeSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginTop="12dp" />
 
                 <Spinner
                     android:id="@+id/directionSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginTop="12dp" />
 
                 <EditText
@@ -121,12 +132,14 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- NUMBERS -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
@@ -136,10 +149,19 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Risk &amp; performance"
+                    android:textColor="#0F172A"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/entryPriceInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
+                    android:layout_marginTop="14dp"
                     android:background="#F8FBFF"
                     android:hint="Entry price"
                     android:inputType="numberDecimal"
@@ -261,12 +283,14 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- STRATEGY -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
@@ -297,19 +321,10 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Checklist"
-                    android:textColor="#0F172A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/noChecklistText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="8dp"
                     android:text="No checklist defined in Strategy section"
                     android:textColor="#64748B"
                     android:textSize="14sp" />
@@ -323,12 +338,14 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- IMAGE -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 

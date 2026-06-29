@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- TOP BAR -->
+        <!-- HEADER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,48 +26,50 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/welcomeTitleText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Welcome, Matteo"
-                    android:textColor="#0F172A"
-                    android:textSize="30sp"
+                    android:text="ATJ"
+                    android:textColor="#64748B"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/welcomeSubtitleText"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/welcomeTitleText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Your journal is ready to start."
-                    android:textColor="#64748B"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="4dp"
+                    android:text="Welcome, Trader"
+                    android:textColor="#0F172A"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/toggleAddMenuButton"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="+"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="24sp"
+                android:textSize="26sp"
                 android:textStyle="bold"
                 app:backgroundTint="#0F172A"
-                app:cornerRadius="28dp" />
+                app:cornerRadius="29dp" />
         </LinearLayout>
 
-        <!-- MINI ADD MENU -->
+        <!-- ADD MENU -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/addTradeMenuContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:visibility="gone"
-            app:cardBackgroundColor="#FDFEFF"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="26dp"
+            app:cardElevation="2dp"
             app:strokeColor="#DCE7F2"
             app:strokeWidth="1dp">
 
@@ -75,21 +77,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="18dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Create trade"
+                    android:text="Create new trade"
                     android:textColor="#0F172A"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Add a manual execution or generate a simulated JSON event."
+                    android:textColor="#64748B"
+                    android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addTradeButton"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="14dp"
                     android:text="Manual Trade"
                     android:textAllCaps="false"
                     android:textStyle="bold"
@@ -99,9 +109,9 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/simulateTradeButton"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="52dp"
                     android:layout_marginTop="10dp"
-                    android:text="Simulated JSON"
+                    android:text="Simulated JSON Trade"
                     android:textAllCaps="false"
                     android:textColor="#0F172A"
                     android:textStyle="bold"
@@ -118,7 +128,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             app:cardBackgroundColor="#0F172A"
-            app:cardCornerRadius="30dp"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="4dp"
             app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
@@ -131,9 +142,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ATJ • Automated Trading Journal"
+                    android:text="Automated Trading Journal"
                     android:textColor="#CBD5E1"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -145,36 +157,85 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/welcomeSubtitleText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:lineSpacingExtra="2dp"
-                    android:text="A cleaner trading workflow with screenshots, strategy alignment, confluence tracking and monthly review."
-                    android:textColor="#94A3B8"
+                    android:layout_marginTop="14dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="No trades yet. Start by adding your first trade."
+                    android:textColor="#CBD5E1"
                     android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#1E293B"
+                        android:paddingStart="12dp"
+                        android:paddingTop="7dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="7dp"
+                        android:text="Latest trade"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="10dp"
+                        android:layout_height="1dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#1E293B"
+                        android:paddingStart="12dp"
+                        android:paddingTop="7dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="7dp"
+                        android:text="Demo-ready"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- FLOATING STATS -->
+        <!-- STATS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Account snapshot"
+            android:textColor="#0F172A"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="112dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -184,7 +245,7 @@
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:textColor="#0F172A"
-                        android:textSize="26sp"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -204,16 +265,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="112dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -223,7 +286,7 @@
                         android:layout_height="wrap_content"
                         android:text="0%"
                         android:textColor="#0F172A"
-                        android:textSize="26sp"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -243,16 +306,18 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="112dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FDFEFF"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -260,7 +325,7 @@
                         android:id="@+id/sourceValueText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 / 0"
+                        android:text="0 | 0"
                         android:textColor="#0F172A"
                         android:textSize="22sp"
                         android:textStyle="bold" />
@@ -270,180 +335,177 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Manual / JSON"
+                        android:text="Manual | JSON"
                         android:textColor="#64748B"
                         android:textSize="12sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- MAIN ACTIONS -->
+        <!-- WORKSPACE -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="Navigate"
+            android:text="Workspace"
             android:textColor="#0F172A"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="1dp"
+            app:strokeColor="#DCE7F2"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Analytics &amp; monthly review"
+                    android:textColor="#0F172A"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Open calendar, session breakdown, source analysis and performance overview."
+                    android:textColor="#64748B"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/openAnalyticsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Open Analytics"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:backgroundTint="#0F172A"
+                    app:cornerRadius="18dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SECONDARY ACTIONS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#FDFEFF"
-                app:cardCornerRadius="26dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
                 app:strokeColor="#DCE7F2"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="180dp"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Workspace"
+                        android:text="Strategy"
                         android:textColor="#0F172A"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_marginTop="8dp"
-                        android:text="Open analytics, monthly review and performance summary."
+                        android:layout_weight="1"
+                        android:text="Define setup, checklist and visual model."
                         android:textColor="#64748B"
-                        android:textSize="14sp" />
+                        android:textSize="13sp" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/openAnalyticsButton"
+                        android:id="@+id/openStrategyButton"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="16dp"
-                        android:text="Open Workspace"
+                        android:layout_height="48dp"
+                        android:text="Open"
                         android:textAllCaps="false"
+                        android:textColor="#0F172A"
                         android:textStyle="bold"
-                        app:backgroundTint="#0F172A"
-                        app:cornerRadius="18dp" />
+                        app:backgroundTint="#F8FBFF"
+                        app:cornerRadius="18dp"
+                        app:strokeColor="#DCE7F2"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
+                app:strokeColor="#DCE7F2"
+                app:strokeWidth="1dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#FDFEFF"
-                    app:cardCornerRadius="24dp"
-                    app:strokeColor="#DCE7F2"
-                    app:strokeWidth="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
+                        android:text="History"
+                        android:textColor="#0F172A"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Strategy"
-                            android:textColor="#0F172A"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Setup, checklist and visual model."
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/openStrategyButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:layout_marginTop="16dp"
-                            android:text="Open"
-                            android:textAllCaps="false"
-                            android:textColor="#0F172A"
-                            android:textStyle="bold"
-                            app:backgroundTint="#F8FBFF"
-                            app:cornerRadius="18dp"
-                            app:strokeColor="#DCE7F2"
-                            app:strokeWidth="1dp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <Space
-                    android:layout_width="12dp"
-                    android:layout_height="1dp" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#FDFEFF"
-                    app:cardCornerRadius="24dp"
-                    app:strokeColor="#DCE7F2"
-                    app:strokeWidth="1dp">
-
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="1"
+                        android:text="Review wins, losses and open trades."
+                        android:textColor="#64748B"
+                        android:textSize="13sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="History"
-                            android:textColor="#0F172A"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Winning, losing and open trades in one place."
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/openHistoryButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:layout_marginTop="16dp"
-                            android:text="Open"
-                            android:textAllCaps="false"
-                            android:textColor="#0F172A"
-                            android:textStyle="bold"
-                            app:backgroundTint="#F8FBFF"
-                            app:cornerRadius="18dp"
-                            app:strokeColor="#DCE7F2"
-                            app:strokeWidth="1dp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/openHistoryButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="Open"
+                        android:textAllCaps="false"
+                        android:textColor="#0F172A"
+                        android:textStyle="bold"
+                        app:backgroundTint="#F8FBFF"
+                        app:cornerRadius="18dp"
+                        app:strokeColor="#DCE7F2"
+                        app:strokeWidth="1dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- FOOTER ACTION -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logoutButton"
             android:layout_width="match_parent"
