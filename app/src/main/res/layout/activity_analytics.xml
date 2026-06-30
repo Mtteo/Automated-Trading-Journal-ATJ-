@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEF4FA"
+    android:background="#05070A"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="18dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#0F172A"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="30dp"
-            app:cardElevation="3dp"
+            app:cardElevation="0dp"
             app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
@@ -29,11 +29,11 @@
 
                 <TextView
                     android:id="@+id/monthTitleText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Journal Workspace"
                     android:textColor="#FFFFFF"
-                    android:textSize="30sp"
+                    android:textSize="28sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Performance snapshot"
-                    android:textColor="#CBD5E1"
+                    android:textColor="#94A3B8"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -54,9 +54,13 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="92dp"
+                        android:layout_marginEnd="7dp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:background="#101826"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
                         <TextView
                             android:id="@+id/totalTradesValueText"
@@ -64,45 +68,56 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="#FFFFFF"
-                            android:textSize="28sp"
+                            android:textSize="25sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:text="Trades"
-                            android:textColor="#94A3B8"
+                            android:textColor="#64748B"
                             android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="92dp"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginEnd="7dp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:background="#101826"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
                         <TextView
                             android:id="@+id/winRateValueText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0%"
-                            android:textColor="#FFFFFF"
-                            android:textSize="28sp"
+                            android:textColor="#3B82F6"
+                            android:textSize="25sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:text="Win rate"
-                            android:textColor="#94A3B8"
+                            android:textColor="#64748B"
                             android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="92dp"
+                        android:layout_marginStart="7dp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:background="#101826"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
                         <TextView
                             android:id="@+id/performanceBalanceValueText"
@@ -110,22 +125,23 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="#FFFFFF"
-                            android:textSize="28sp"
+                            android:textSize="22sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/performanceBalanceLabelText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:text="Net PnL"
-                            android:textColor="#94A3B8"
+                            android:textColor="#64748B"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- BESTS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -136,11 +152,12 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#0B1120"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="1dp"
-                app:strokeColor="#DCE7F2"
+                app:cardElevation="0dp"
+                app:strokeColor="#1E293B"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -163,24 +180,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="No data"
-                        android:textColor="#0F172A"
+                        android:textColor="#FFFFFF"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <Space
-                android:layout_width="12dp"
-                android:layout_height="1dp" />
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
+                android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#0B1120"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="1dp"
-                app:strokeColor="#DCE7F2"
+                app:cardElevation="0dp"
+                app:strokeColor="#1E293B"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -203,22 +217,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="No data"
-                        android:textColor="#0F172A"
+                        android:textColor="#FFFFFF"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- CALENDAR -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:cardElevation="0dp"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -231,7 +244,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Monthly Journal"
-                    android:textColor="#0F172A"
+                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -239,8 +252,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Green = win • Red = loss • Orange = mixed • Blue = open"
-                    android:textColor="#64748B"
+                    android:text="↗ Win • ↘ Loss • Open and BE are tracked separately"
+                    android:textColor="#94A3B8"
                     android:textSize="13sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -252,7 +265,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- DETAILS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -263,11 +275,12 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#0B1120"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="1dp"
-                app:strokeColor="#DCE7F2"
+                app:cardElevation="0dp"
+                app:strokeColor="#1E293B"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -290,24 +303,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="0%"
-                        android:textColor="#0F172A"
+                        android:textColor="#3B82F6"
                         android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <Space
-                android:layout_width="12dp"
-                android:layout_height="1dp" />
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
+                android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#0B1120"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="1dp"
-                app:strokeColor="#DCE7F2"
+                app:cardElevation="0dp"
+                app:strokeColor="#1E293B"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -330,7 +340,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="No data"
-                        android:textColor="#0F172A"
+                        android:textColor="#FFFFFF"
                         android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -342,10 +352,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="24dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:cardElevation="0dp"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -367,7 +377,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="No data"
-                    android:textColor="#0F172A"
+                    android:textColor="#FFFFFF"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </LinearLayout>

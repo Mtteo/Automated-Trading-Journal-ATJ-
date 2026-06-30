@@ -3,40 +3,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEF4FA"
+    android:background="#05070A"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="18dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Trade Editor"
-            android:textColor="#0F172A"
-            android:textSize="30sp"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Capture execution, context, confluences and review notes."
-            android:textColor="#64748B"
-            android:textSize="14sp" />
+            android:text="Capture execution, risk, confluence and review notes."
+            android:textColor="#94A3B8"
+            android:textSize="13sp" />
 
-        <!-- BASIC INFO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="↗ Bull setup"
+                android:textColor="#3B82F6"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:text="↘ Bear setup"
+                android:textColor="#EF4444"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:cardElevation="0dp"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -46,10 +69,10 @@
                 android:padding="18dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Execution"
-                    android:textColor="#0F172A"
+                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -58,89 +81,92 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="14dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Asset (e.g. NAS100)"
                     android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <Spinner
                     android:id="@+id/typeSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_height="50dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#101826"
+                    android:popupBackground="#101826" />
 
                 <Spinner
                     android:id="@+id/directionSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_height="50dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#101826"
+                    android:popupBackground="#101826" />
 
                 <EditText
                     android:id="@+id/dateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Date"
                     android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/sessionInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Session"
                     android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/locationInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Location"
                     android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/resultInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Result (Open, Win, Loss, BE)"
                     android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- NUMBERS -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:cardElevation="0dp"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -150,10 +176,10 @@
                 android:padding="18dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Risk &amp; performance"
-                    android:textColor="#0F172A"
+                    android:text="Risk &amp; Performance"
+                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -162,136 +188,155 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="14dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Entry price"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/exitPriceInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Exit price"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/stopLossInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Stop loss"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/takeProfitInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Take profit"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/rrInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="RR"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/positionValueInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Position value"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/positionPercentInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="% of account used"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/accountValueInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Account value"
                     android:inputType="numberDecimal"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/pnlAmountInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="PnL amount"
                     android:inputType="numberDecimal|numberSigned"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/pnlPercentInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="10dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="PnL %"
                     android:inputType="numberDecimal|numberSigned"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/notesInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:gravity="top"
                     android:hint="Notes / reasoning"
                     android:inputType="textMultiLine"
                     android:minLines="4"
                     android:padding="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- STRATEGY -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:cardElevation="0dp"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -307,7 +352,7 @@
                     android:text="Add Voice Reflection"
                     android:textAllCaps="false"
                     android:textStyle="bold"
-                    app:backgroundTint="#0F172A"
+                    app:backgroundTint="#2563EB"
                     app:cornerRadius="18dp" />
 
                 <TextView
@@ -316,7 +361,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Active Strategy: Not defined"
-                    android:textColor="#0F172A"
+                    android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -338,15 +383,14 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- IMAGE -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:cardElevation="0dp"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -355,32 +399,38 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/pickImageButton"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Pick Image from Gallery"
-                    android:textAllCaps="false"
-                    android:textColor="#0F172A"
-                    android:textStyle="bold"
-                    app:backgroundTint="#F8FBFF"
-                    app:cornerRadius="18dp"
-                    app:strokeColor="#DCE7F2"
-                    app:strokeWidth="1dp" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/takePhotoButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Take Photo"
-                    android:textAllCaps="false"
-                    android:textColor="#0F172A"
-                    android:textStyle="bold"
-                    app:backgroundTint="#F8FBFF"
-                    app:cornerRadius="18dp"
-                    app:strokeColor="#DCE7F2"
-                    app:strokeWidth="1dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/pickImageButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:text="Gallery"
+                        android:textAllCaps="false"
+                        android:textColor="#E2E8F0"
+                        android:textStyle="bold"
+                        app:backgroundTint="#101826"
+                        app:cornerRadius="18dp"
+                        app:strokeColor="#1E293B"
+                        app:strokeWidth="1dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/takePhotoButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:text="Camera"
+                        android:textAllCaps="false"
+                        android:textStyle="bold"
+                        app:backgroundTint="#2563EB"
+                        app:cornerRadius="18dp" />
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/imagePreview"
@@ -396,13 +446,13 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveTradeButton"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="56dp"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="20dp"
             android:text="Save Trade"
             android:textAllCaps="false"
             android:textStyle="bold"
-            app:backgroundTint="#0F172A"
+            app:backgroundTint="#2563EB"
             app:cornerRadius="20dp" />
 
     </LinearLayout>

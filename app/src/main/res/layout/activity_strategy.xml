@@ -3,56 +3,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEF4FA"
+    android:background="#05070A"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="18dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#0F172A"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="3dp"
-            app:strokeColor="#1E293B"
-            app:strokeWidth="1dp">
+            android:text="Strategy"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Build your trading model, checklist and reference image."
+            android:textColor="#94A3B8"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="22dp">
+                android:text="↗"
+                android:textColor="#3B82F6"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Strategy"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Define the model you want every trade to respect."
-                    android:textColor="#CBD5E1"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="↘"
+                android:textColor="#EF4444"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            app:cardBackgroundColor="#FFFFFF"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -65,34 +71,34 @@
                     android:id="@+id/strategyNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:hint="Strategy name"
                     android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <EditText
                     android:id="@+id/strategyDescriptionInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:gravity="top"
                     android:hint="Strategy description"
                     android:inputType="textMultiLine"
                     android:minLines="4"
                     android:padding="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Checklist items"
-                    android:textColor="#0F172A"
+                    android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -101,14 +107,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:background="#F8FBFF"
+                    android:background="#101826"
                     android:gravity="top"
-                    android:hint="Liquidity sweep&#10;BOS confirmation&#10;RR above 1.5"
+                    android:hint="Liquidity sweep&#10;SMT divergence&#10;BOS confirmation"
                     android:inputType="textMultiLine"
                     android:minLines="6"
                     android:padding="16dp"
-                    android:textColor="#0F172A"
-                    android:textColorHint="#94A3B8" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#64748B" />
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -116,10 +123,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#0B1120"
             app:cardCornerRadius="28dp"
-            app:cardElevation="1dp"
-            app:strokeColor="#DCE7F2"
+            app:strokeColor="#1E293B"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -128,32 +134,55 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/pickStrategyImageButton"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Pick Strategy Image"
-                    android:textAllCaps="false"
-                    android:textColor="#0F172A"
-                    android:textStyle="bold"
-                    app:backgroundTint="#F8FBFF"
-                    app:cornerRadius="18dp"
-                    app:strokeColor="#DCE7F2"
-                    app:strokeWidth="1dp" />
+                    android:layout_height="wrap_content"
+                    android:text="Visual Reference"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/takeStrategyPhotoButton"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Take Strategy Photo"
-                    android:textAllCaps="false"
-                    android:textColor="#0F172A"
-                    android:textStyle="bold"
-                    app:backgroundTint="#F8FBFF"
-                    app:cornerRadius="18dp"
-                    app:strokeColor="#DCE7F2"
-                    app:strokeWidth="1dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Use an image to remember your ideal setup."
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/pickStrategyImageButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:text="Pick Image"
+                        android:textAllCaps="false"
+                        android:textColor="#E2E8F0"
+                        android:textStyle="bold"
+                        app:backgroundTint="#101826"
+                        app:cornerRadius="18dp"
+                        app:strokeColor="#1E293B"
+                        app:strokeWidth="1dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/takeStrategyPhotoButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:text="Take Photo"
+                        android:textAllCaps="false"
+                        android:textStyle="bold"
+                        app:backgroundTint="#2563EB"
+                        app:cornerRadius="18dp" />
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/strategyImagePreview"
@@ -163,6 +192,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -175,7 +205,7 @@
             android:text="Save Strategy"
             android:textAllCaps="false"
             android:textStyle="bold"
-            app:backgroundTint="#0F172A"
+            app:backgroundTint="#2563EB"
             app:cornerRadius="20dp" />
 
     </LinearLayout>
