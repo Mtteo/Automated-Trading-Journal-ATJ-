@@ -16,6 +16,7 @@ import com.example.atj.utils.JsonSimulationSamples
 import com.example.atj.utils.NotificationHelper
 import com.example.atj.utils.SessionManager
 import com.example.atj.utils.TradeEventParser
+import com.example.atj.utils.TradeStateHelper
 import com.google.android.material.button.MaterialButton
 import java.util.Locale
 
@@ -115,15 +116,17 @@ class MainActivity : AppCompatActivity() {
                     confluenceScore = confluenceScore
                 )
 
-                database.tradeDao().insertTrade(trade)
+                val normalizedTrade = TradeStateHelper.normalizeTrade(trade)
+
+                database.tradeDao().insertTrade(normalizedTrade)
                 refreshDashboard()
                 hideAddMenu()
 
                 NotificationHelper.showTradeCreatedNotification(
                     context = this,
-                    asset = trade.asset,
-                    type = trade.type,
-                    source = trade.source
+                    asset = normalizedTrade.asset,
+                    type = normalizedTrade.type,
+                    source = normalizedTrade.source
                 )
             }
         }
@@ -254,20 +257,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDashboardStats(trades: List<Trade>) {
-        val totalTrades = trades.size
+        val normalizedTrades = trades.map { TradeStateHelper.normalizeTrade(it) }
 
-        val closedTrades = trades.filter {
-            !it.result.equals("Open", ignoreCase = true) &&
-                    it.result.isNotBlank()
+        val totalTrades = normalizedTrades.size
+
+        val closedTrades = normalizedTrades.filter {
+            TradeStateHelper.isClosed(it)
         }
 
-        val openTradesCount = trades.count {
-            it.result.isBlank() ||
-                    it.result.equals("Open", ignoreCase = true)
+        val openTradesCount = normalizedTrades.count {
+            TradeStateHelper.isOpen(it)
         }
 
         val wins = closedTrades.count {
-            it.result.equals("Win", ignoreCase = true)
+            TradeStateHelper.isWin(it)
         }
 
         val winRate = if (closedTrades.isNotEmpty()) {
@@ -276,19 +279,19 @@ class MainActivity : AppCompatActivity() {
             0
         }
 
-        val manualCount = trades.count {
+        val manualCount = normalizedTrades.count {
             it.source.equals("manual", ignoreCase = true)
         }
 
-        val jsonCount = trades.count {
+        val jsonCount = normalizedTrades.count {
             it.source.equals("json", ignoreCase = true)
         }
 
-        val demoCount = trades.count {
+        val demoCount = normalizedTrades.count {
             it.source.equals("demo", ignoreCase = true)
         }
 
-        val latestTrade = trades.firstOrNull()
+        val latestTrade = normalizedTrades.firstOrNull()
         val latestAccountValue = latestTrade?.accountValue ?: 0.0
         val displayName = if (currentUsername.isNotBlank()) currentUsername else "Trader"
         val accountText = String.format(Locale.getDefault(), "%.2f", latestAccountValue)
@@ -333,7 +336,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val latestText = if (latestTrade != null) {
-            "Latest: ${latestTrade.asset} • ${latestTrade.result.ifBlank { "Open" }} • ${latestTrade.date}"
+            "Latest: ${latestTrade.asset} • ${TradeStateHelper.displayState(latestTrade)} • ${latestTrade.date}"
         } else {
             "Latest: no trade"
         }
@@ -344,15 +347,16 @@ class MainActivity : AppCompatActivity() {
     private fun simulateTradeEvent() {
         val sampleJson = JsonSimulationSamples.getNextSampleJson(System.currentTimeMillis().toInt())
         val parsedTrade = TradeEventParser.parseTradeEvent(sampleJson, currentUserId)
+        val normalizedTrade = TradeStateHelper.normalizeTrade(parsedTrade)
 
-        database.tradeDao().insertTrade(parsedTrade)
+        database.tradeDao().insertTrade(normalizedTrade)
         refreshDashboard()
 
         NotificationHelper.showTradeCreatedNotification(
             context = this,
-            asset = parsedTrade.asset,
-            type = parsedTrade.type,
-            source = parsedTrade.source
+            asset = normalizedTrade.asset,
+            type = normalizedTrade.type,
+            source = normalizedTrade.source
         )
     }
 

@@ -9,13 +9,6 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.random.Random
 
-/**
- * Popola automaticamente l'app con un mese demo realistico.
- *
- * Regola importante:
- * - solo gli username demo/esame/atjdemo ricevono i trade demo
- * - tutti gli altri utenti rimangono vuoti
- */
 object DemoDataSeeder {
 
     private const val DEMO_PREFS_NAME = "atj_demo_data_prefs"
@@ -36,15 +29,6 @@ object DemoDataSeeder {
         }
     }
 
-    /**
-     * Metodo da chiamare quando MainActivity parte.
-     *
-     * Se è profilo demo:
-     * - carica il mese demo se non è già stato caricato.
-     *
-     * Se NON è profilo demo:
-     * - cancella eventuali trade demo caricati per errore in passato.
-     */
     fun prepareDemoDataForUser(
         context: Context,
         database: AppDatabase,
@@ -61,19 +45,37 @@ object DemoDataSeeder {
         seedDemoMonthIfNeeded(context, database, userId)
     }
 
-    private fun seedDemoMonthIfNeeded(context: Context, database: AppDatabase, userId: Long) {
-        val prefs = context.getSharedPreferences(DEMO_PREFS_NAME, Context.MODE_PRIVATE)
-        val demoAlreadyLoaded = prefs.getBoolean(buildDemoKey(userId), false)
-
+    private fun seedDemoMonthIfNeeded(
+        context: Context,
+        database: AppDatabase,
+        userId: Long
+    ) {
         val existingTrades = database.tradeDao().getTradesByUserId(userId)
 
-        if (demoAlreadyLoaded || existingTrades.isNotEmpty()) {
+        val existingDemoTrades = existingTrades.filter {
+            it.source.equals("demo", ignoreCase = true)
+        }
+
+        /*
+         * Regola corretta:
+         *
+         * Se il profilo è demo, il mese demo deve esistere davvero nel database.
+         * Non basta fidarsi delle SharedPreferences, perché una migration può resettare
+         * il database ma lasciare le prefs salvate.
+         */
+        if (existingDemoTrades.isNotEmpty()) {
+            context.getSharedPreferences(DEMO_PREFS_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(buildDemoKey(userId), true)
+                .apply()
+
             return
         }
 
         seedDemoMonth(database, userId)
 
-        prefs.edit()
+        context.getSharedPreferences(DEMO_PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
             .putBoolean(buildDemoKey(userId), true)
             .apply()
     }
@@ -82,7 +84,8 @@ object DemoDataSeeder {
         val demoTrades = buildDemoTrades(userId)
 
         demoTrades.forEach { trade ->
-            database.tradeDao().insertTrade(trade)
+            val normalizedTrade = TradeStateHelper.normalizeTrade(trade)
+            database.tradeDao().insertTrade(normalizedTrade)
         }
     }
 

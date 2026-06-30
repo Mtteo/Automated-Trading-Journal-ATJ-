@@ -7,16 +7,12 @@ import androidx.room.RoomDatabase
 import com.example.atj.model.Trade
 import com.example.atj.model.User
 
-/**
- * Database Room principale.
- *
- * NOTA:
- * usiamo fallbackToDestructiveMigration perché per ora
- * non ci interessa mantenere i dati vecchi.
- */
 @Database(
-    entities = [Trade::class, User::class],
-    version = 7
+    entities = [
+        Trade::class,
+        User::class
+    ],
+    version = 8
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -24,6 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
     companion object {
+
         @Volatile
         private var INSTANCE: AppDatabase? = null
 

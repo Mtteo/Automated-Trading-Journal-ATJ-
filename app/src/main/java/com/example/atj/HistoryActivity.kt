@@ -14,6 +14,7 @@ import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import com.example.atj.ui.HistoryTradeAdapter
 import com.example.atj.utils.SessionManager
+import com.example.atj.utils.TradeStateHelper
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -51,6 +52,7 @@ class HistoryActivity : AppCompatActivity() {
                     date = data.getStringExtra("date") ?: oldTrade.date,
                     session = data.getStringExtra("session") ?: oldTrade.session,
                     locationText = data.getStringExtra("locationText") ?: oldTrade.locationText,
+
                     entryPrice = data.getDoubleExtra("entryPrice", oldTrade.entryPrice),
                     exitPrice = data.getDoubleExtra("exitPrice", oldTrade.exitPrice),
                     stopLoss = data.getDoubleExtra("stopLoss", oldTrade.stopLoss),
@@ -64,6 +66,7 @@ class HistoryActivity : AppCompatActivity() {
                     accountValue = data.getDoubleExtra("accountValue", oldTrade.accountValue),
                     pnlAmount = data.getDoubleExtra("pnlAmount", oldTrade.pnlAmount),
                     pnlPercent = data.getDoubleExtra("pnlPercent", oldTrade.pnlPercent),
+
                     notes = data.getStringExtra("notes") ?: oldTrade.notes,
                     imagePath = data.getStringExtra("imagePath") ?: oldTrade.imagePath,
                     strategyName = data.getStringExtra("strategyName") ?: oldTrade.strategyName,
@@ -75,7 +78,9 @@ class HistoryActivity : AppCompatActivity() {
                     )
                 )
 
-                database.tradeDao().updateTrade(updatedTrade)
+                val normalizedTrade = TradeStateHelper.normalizeTrade(updatedTrade)
+
+                database.tradeDao().updateTrade(normalizedTrade)
                 tradeBeingEdited = null
                 loadTrades()
 
@@ -123,20 +128,20 @@ class HistoryActivity : AppCompatActivity() {
     private fun setupLists() {
         winningAdapter = HistoryTradeAdapter(
             trades = mutableListOf(),
-            onItemClick = { openTradeDetail(it) },
-            onItemLongClick = { openEditTrade(it) }
+            onItemClick = { trade -> openTradeDetail(trade) },
+            onItemLongClick = { trade -> openEditTrade(trade) }
         )
 
         losingAdapter = HistoryTradeAdapter(
             trades = mutableListOf(),
-            onItemClick = { openTradeDetail(it) },
-            onItemLongClick = { openEditTrade(it) }
+            onItemClick = { trade -> openTradeDetail(trade) },
+            onItemLongClick = { trade -> openEditTrade(trade) }
         )
 
         openAdapter = HistoryTradeAdapter(
             trades = mutableListOf(),
-            onItemClick = { openTradeDetail(it) },
-            onItemLongClick = { openEditTrade(it) }
+            onItemClick = { trade -> openTradeDetail(trade) },
+            onItemLongClick = { trade -> openEditTrade(trade) }
         )
 
         winningRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -149,19 +154,20 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun loadTrades() {
-        val trades = database.tradeDao().getTradesByUserId(currentUserId)
+        val trades = database.tradeDao()
+            .getTradesByUserId(currentUserId)
+            .map { TradeStateHelper.normalizeTrade(it) }
 
         val winningTrades = trades.filter {
-            it.result.equals("Win", ignoreCase = true)
+            TradeStateHelper.isWin(it)
         }
 
         val losingTrades = trades.filter {
-            it.result.equals("Loss", ignoreCase = true)
+            TradeStateHelper.isLoss(it)
         }
 
         val openOrOtherTrades = trades.filter {
-            !it.result.equals("Win", ignoreCase = true) &&
-                    !it.result.equals("Loss", ignoreCase = true)
+            TradeStateHelper.isOpen(it) || TradeStateHelper.isBreakEven(it)
         }
 
         winningSectionTitle.text = "Winning Trades (${winningTrades.size})"
@@ -197,14 +203,25 @@ class HistoryActivity : AppCompatActivity() {
         emptyText: TextView
     ) {
         val isEmpty = trades.isEmpty()
-        emptyText.visibility = if (isEmpty) View.VISIBLE else View.GONE
-        recyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
+
+        emptyText.visibility = if (isEmpty) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+
+        recyclerView.visibility = if (isEmpty) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 
     private fun openTradeDetail(trade: Trade) {
         val intent = Intent(this, TradeDetailActivity::class.java).apply {
             putExtra("trade_id", trade.id)
         }
+
         startActivity(intent)
     }
 
@@ -219,7 +236,7 @@ class HistoryActivity : AppCompatActivity() {
             putExtra("direction", trade.direction)
             putExtra("date", trade.date)
             putExtra("session", trade.session)
-            putExtra("result", trade.result)
+            putExtra("result", TradeStateHelper.displayState(trade))
             putExtra("notes", trade.notes)
             putExtra("imagePath", trade.imagePath)
             putExtra("strategyName", trade.strategyName)
