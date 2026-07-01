@@ -17,15 +17,9 @@ import com.example.atj.R
 import com.example.atj.receiver.SessionAlarmReceiver
 import java.util.Calendar
 
-/**
- * Helper centrale per tutte le notifiche dell'app.
- *
- * Gestisce:
- * - creazione canale notifiche
- * - verifica permesso runtime
- * - notifiche trade saved / deleted
- * - notifiche sessione
- * - scheduling giornaliero delle sessioni
+/*
+ * Helper centrale per notifiche e promemoria.
+ * Raggruppa la logica legata a NotificationManager e AlarmManager.
  */
 object NotificationHelper {
 
@@ -33,8 +27,9 @@ object NotificationHelper {
     private const val CHANNEL_NAME = "ATJ Notifications"
     private const val CHANNEL_DESCRIPTION = "Trade confirmations and session reminders"
 
-    /**
-     * Crea il canale notifiche richiesto da Android 8+.
+    /*
+     * Crea il canale notifiche richiesto da Android
+     * Senza canale, le notifiche non vengono mostrate sulle versioni recenti.
      */
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -53,8 +48,9 @@ object NotificationHelper {
         }
     }
 
-    /**
-     * Controlla se l'app ha il permesso per mostrare notifiche.
+    /*
+     * Controlla il permesso runtime per le notifiche.
+     * Da Android 13 POST_NOTIFICATIONS deve essere concesso dall'utente.
      */
     fun hasNotificationPermission(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -67,8 +63,9 @@ object NotificationHelper {
         }
     }
 
-    /**
-     * Notifica immediata quando viene salvato un trade.
+    /*
+     * Mostra una notifica quando un trade viene salvato.
+     * Il PendingIntent riapre la MainActivity al click sulla notifica.
      */
     fun showTradeCreatedNotification(
         context: Context,
@@ -101,8 +98,8 @@ object NotificationHelper {
             .notify((System.currentTimeMillis() % 100000).toInt(), notification)
     }
 
-    /**
-     * Notifica immediata quando viene cancellato un trade.
+    /*
+     * Mostra una notifica quando un trade viene cancellato.
      */
     fun showTradeDeletedNotification(
         context: Context,
@@ -134,8 +131,9 @@ object NotificationHelper {
             .notify((System.currentTimeMillis() % 100000).toInt(), notification)
     }
 
-    /**
-     * Notifica sessione.
+    /*
+     * Notifica l'inizio di una sessione di mercato.
+     * Viene chiamata dal BroadcastReceiver quando scatta l'allarme.
      */
     fun showSessionNotification(context: Context, sessionName: String) {
         createNotificationChannel(context)
@@ -162,14 +160,9 @@ object NotificationHelper {
         NotificationManagerCompat.from(context).notify(sessionName.hashCode(), notification)
     }
 
-    /**
-     * Programma tutte le notifiche giornaliere delle sessioni.
-     *
-     * Orari attuali:
-     * - Sydney 00:00
-     * - Asia 01:00
-     * - London 09:00
-     * - NY 14:30
+    /*
+     * Programma le notifiche giornaliere delle sessioni.
+     * AlarmManager serve per eseguire un Intent in un momento futuro.
      */
     fun scheduleAllSessionNotifications(context: Context) {
         scheduleDailySessionNotification(context, "Sydney", 0, 0, 2001)
@@ -178,8 +171,9 @@ object NotificationHelper {
         scheduleDailySessionNotification(context, "NY", 14, 30, 2004)
     }
 
-    /**
-     * Programma una notifica giornaliera per una sessione.
+    /*
+     * Programma una singola notifica giornaliera.
+     * Il PendingIntent punta al BroadcastReceiver, non direttamente a una Activity.
      */
     private fun scheduleDailySessionNotification(
         context: Context,
@@ -206,18 +200,21 @@ object NotificationHelper {
         val triggerTime = getNextTriggerTime(hour, minute)
 
         try {
+            // Allarme più preciso, anche con dispositivo in idle quando consentito.
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerTime,
                 pendingIntent
             )
         } catch (e: SecurityException) {
+            // Fallback se l'app non può usare allarmi esatti.
             alarmManager.setAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerTime,
                 pendingIntent
             )
         } catch (e: Exception) {
+            // Ultimo fallback: allarme standard.
             alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
                 triggerTime,
@@ -226,8 +223,9 @@ object NotificationHelper {
         }
     }
 
-    /**
-     * Calcola il prossimo orario valido per una notifica giornaliera.
+    /*
+     * Calcola il prossimo orario valido.
+     * Se l'orario di oggi è già passato, programma quello del giorno dopo.
      */
     private fun getNextTriggerTime(hour: Int, minute: Int): Long {
         val now = Calendar.getInstance()

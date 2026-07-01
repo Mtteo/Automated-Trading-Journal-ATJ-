@@ -10,16 +10,30 @@ import com.example.atj.data.AppDatabase
 import com.example.atj.model.User
 import com.example.atj.utils.SessionManager
 
+/*
+ * Activity di registrazione.
+ * Crea un nuovo utente locale e salva subito la sessione.
+ */
 class RegisterActivity : AppCompatActivity() {
 
+    /*
+     * Campi del form definiti nel layout XML.
+     */
     private lateinit var usernameInput: EditText
     private lateinit var passwordInput: EditText
     private lateinit var confirmPasswordInput: EditText
     private lateinit var createAccountButton: Button
     private lateinit var backToLoginButton: Button
 
+    /*
+     * Database Room usato per salvare e controllare gli utenti.
+     */
     private lateinit var database: AppDatabase
 
+    /*
+     * Inizializza la schermata.
+     * Se esiste già una sessione attiva, evita una nuova registrazione.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,6 +61,10 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Valida i dati inseriti e crea un nuovo record User.
+     * I Toast danno feedback immediato senza cambiare schermata.
+     */
     private fun register() {
         val username = usernameInput.text.toString().trim()
         val password = passwordInput.text.toString().trim()
@@ -84,6 +102,9 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
+        /*
+         * Controllo sul DAO per evitare username duplicati.
+         */
         val existingUser = database.userDao().getUserByUsername(username)
 
         if (existingUser != null) {
@@ -96,6 +117,9 @@ class RegisterActivity : AppCompatActivity() {
             password = password
         )
 
+        /*
+         * Insert Room: restituisce l'id generato dal database.
+         */
         val newUserId = database.userDao().insertUser(newUser)
 
         SessionManager.saveLogin(this, newUserId, username)
@@ -105,6 +129,10 @@ class RegisterActivity : AppCompatActivity() {
         openMain()
     }
 
+    /*
+     * Navigazione verso la MainActivity tramite Intent esplicito.
+     * finish() rimuove la registrazione dal back stack.
+     */
     private fun openMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)

@@ -4,19 +4,16 @@ import org.json.JSONObject
 import java.util.Calendar
 import kotlin.random.Random
 
-/**
- * Generatore di payload JSON simulati.
- *
- * Ogni chiamata crea un trade realistico e diverso:
- * - NAS100 / SPX500
- * - Buy / Sell
- * - Long / Short
- * - Win / Loss / Open
- * - prezzi completi
- * - account, position size, PnL, RR
+/*
+ * Generatore di trade JSON simulati.
+ * Serve a testare l'import automatico senza dipendere da API esterne reali.
  */
 object JsonSimulationSamples {
 
+    /*
+     * Crea un payload JSON diverso a ogni chiamata.
+     * Il formato simula dati ricevuti da un sistema esterno.
+     */
     fun getNextSampleJson(indexSeed: Int): String {
         val random = Random(System.currentTimeMillis() + indexSeed)
 
@@ -96,6 +93,10 @@ object JsonSimulationSamples {
             else -> "Generated JSON open trade. Waiting for confirmation or management."
         }
 
+        /*
+         * JSONObject costruisce una struttura key-value simile a quella ricevuta
+         * da backend o integrazioni automatiche.
+         */
         val jsonObject = JSONObject()
         jsonObject.put("source", "json")
         jsonObject.put("externalId", externalId)
@@ -119,6 +120,9 @@ object JsonSimulationSamples {
         return jsonObject.toString()
     }
 
+    /*
+     * Arrotonda i numeri a due decimali per simulare dati più leggibili.
+     */
     private fun round2(value: Double): Double {
         return kotlin.math.round(value * 100.0) / 100.0
     }

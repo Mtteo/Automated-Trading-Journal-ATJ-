@@ -2,6 +2,10 @@ package com.example.atj.utils
 
 import android.content.Context
 
+/*
+ * Utility singleton che inserisce una strategia demo nelle SharedPreferences.
+ * È utile per avere dati iniziali già pronti senza usare una tabella Room.
+ */
 object DemoStrategySeeder {
 
     private const val PREFS_NAME = "strategy_prefs"
@@ -11,6 +15,10 @@ object DemoStrategySeeder {
     private const val STRATEGY_CHECKLIST_KEY = "strategy_checklist"
     private const val STRATEGY_IMAGE_PATH_KEY = "strategy_image_path"
 
+    /*
+     * Salva una strategia predefinita in modalità key-value.
+     * SharedPreferences è adatto per dati semplici di configurazione o preferenze.
+     */
     fun seedDemoStrategy(context: Context) {
         val checklist = listOf(
             "Liquidity sweep",

@@ -9,6 +9,10 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.random.Random
 
+/*
+ * Seeder dei dati demo.
+ * Serve a popolare il database locale con trade realistici per test e presentazione.
+ */
 object DemoDataSeeder {
 
     private const val DEMO_PREFS_NAME = "atj_demo_data_prefs"
@@ -31,16 +35,27 @@ object DemoDataSeeder {
         "75% closure"
     )
 
+    /*
+     * Crea una chiave diversa per ogni utente.
+     * Così il caricamento demo resta separato per profilo.
+     */
     private fun buildDemoKey(userId: Long): String {
         return "demo_loaded_user_$userId"
     }
 
+    /*
+     * Verifica se l'utente corrente è un profilo demo.
+     */
     fun isDemoProfile(username: String): Boolean {
         return demoUsernames.any { demoName ->
             username.equals(demoName, ignoreCase = true)
         }
     }
 
+    /*
+     * Punto di ingresso per preparare i dati demo.
+     * Usa Room per i trade e SharedPreferences per ricordare lo stato del seed.
+     */
     fun prepareDemoDataForUser(
         context: Context,
         database: AppDatabase,
@@ -57,6 +72,10 @@ object DemoDataSeeder {
         seedDemoMonthIfNeeded(context, database, userId)
     }
 
+    /*
+     * Inserisce i trade demo solo se non sono già presenti.
+     * Evita duplicati nella tabella trades.
+     */
     private fun seedDemoMonthIfNeeded(
         context: Context,
         database: AppDatabase,
@@ -85,6 +104,10 @@ object DemoDataSeeder {
             .apply()
     }
 
+    /*
+     * Costruisce i trade demo e li salva tramite DAO.
+     * Prima dell'inserimento normalizza lo stato del trade.
+     */
     private fun seedDemoMonth(database: AppDatabase, userId: Long) {
         val demoTrades = buildDemoTrades(userId)
 
@@ -94,6 +117,10 @@ object DemoDataSeeder {
         }
     }
 
+    /*
+     * Genera una lista di trade demo.
+     * I dati sono fittizi ma coerenti con il dominio dell'app.
+     */
     private fun buildDemoTrades(userId: Long): List<Trade> {
         val trades = mutableListOf<Trade>()
 
@@ -104,6 +131,10 @@ object DemoDataSeeder {
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 
+        /*
+         * Template base dei trade.
+         * Vengono riutilizzati nel ciclo per creare un mese demo vario.
+         */
         val templates = listOf(
             DemoTemplate(
                 asset = "NAS100",
@@ -149,6 +180,10 @@ object DemoDataSeeder {
 
         var accountValue = 10000.0
 
+        /*
+         * Genera 22 trade chiusi distribuiti sul mese.
+         * Calendar e SimpleDateFormat servono per creare date leggibili e timestamp.
+         */
         for (i in 0 until 22) {
             val template = templates[i % templates.size]
 
@@ -174,6 +209,7 @@ object DemoDataSeeder {
             val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                 .format(calendar.time)
 
+            // Piccola variazione casuale per rendere i dati demo meno artificiali.
             val randomNoise = Random.nextDouble(-18.0, 18.0)
             val entry = template.baseEntry + randomNoise
 
@@ -235,6 +271,10 @@ object DemoDataSeeder {
                 Random.nextInt(38, 68)
             }
 
+            /*
+             * Entity Trade pronta per Room.
+             * Ogni oggetto diventerà una riga nella tabella trades.
+             */
             val trade = Trade(
                 userId = userId,
                 source = "demo",
@@ -266,6 +306,7 @@ object DemoDataSeeder {
             trades.add(trade)
         }
 
+        // Aggiunge un trade aperto per mostrare anche questo stato nella UI.
         trades.add(
             buildOpenTrade(
                 userId = userId,
@@ -278,6 +319,7 @@ object DemoDataSeeder {
             )
         )
 
+        // Aggiunge un trade break-even per coprire un altro caso possibile.
         trades.add(
             buildBreakEvenTrade(
                 userId = userId,
@@ -293,6 +335,9 @@ object DemoDataSeeder {
         return trades
     }
 
+    /*
+     * Costruisce un trade demo ancora aperto.
+     */
     private fun buildOpenTrade(
         userId: Long,
         asset: String,
@@ -341,6 +386,9 @@ object DemoDataSeeder {
         )
     }
 
+    /*
+     * Costruisce un trade chiuso a pareggio.
+     */
     private fun buildBreakEvenTrade(
         userId: Long,
         asset: String,
@@ -389,6 +437,10 @@ object DemoDataSeeder {
         )
     }
 
+    /*
+     * Seleziona un sottoinsieme casuale di confluence.
+     * Serve a simulare checklist diverse tra trade.
+     */
     private fun buildCheckedConfluences(index: Int): String {
         val count = 4 + (index % 4)
 
@@ -398,6 +450,9 @@ object DemoDataSeeder {
             .joinToString(", ")
     }
 
+    /*
+     * Genera note demo diverse per trade vinti e persi.
+     */
     private fun buildDemoNotes(template: DemoTemplate, isWin: Boolean): String {
         return if (isWin) {
             "Demo setup: ${template.setupName}. Execution followed Liquidity ICT Strategy. Main confirmations: liquidity sweep, structure confirmation and fair value gap reaction."
@@ -406,10 +461,17 @@ object DemoDataSeeder {
         }
     }
 
+    /*
+     * Arrotonda i valori numerici a due decimali per una visualizzazione più pulita.
+     */
     private fun round2(value: Double): Double {
         return kotlin.math.round(value * 100.0) / 100.0
     }
 
+    /*
+     * Template interno per creare trade demo.
+     * data class usata solo come modello di supporto, non come Entity Room.
+     */
     private data class DemoTemplate(
         val asset: String,
         val type: String,

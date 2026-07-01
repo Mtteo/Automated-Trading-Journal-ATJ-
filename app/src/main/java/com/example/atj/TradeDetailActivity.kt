@@ -16,11 +16,21 @@ import com.example.atj.utils.ImageDisplayHelper
 import com.example.atj.utils.NotificationHelper
 import com.example.atj.utils.SessionManager
 
+/*
+ * Activity di dettaglio del trade.
+ * Mostra tutti i dati salvati e permette modifica o cancellazione.
+ */
 class TradeDetailActivity : AppCompatActivity() {
 
+    /*
+     * Database Room e trade corrente caricato dal suo id.
+     */
     private lateinit var database: AppDatabase
     private var currentTrade: Trade? = null
 
+    /*
+     * View del dettaglio.
+     */
     private lateinit var assetTextView: TextView
     private lateinit var typeTextView: TextView
     private lateinit var dateTextView: TextView
@@ -36,6 +46,10 @@ class TradeDetailActivity : AppCompatActivity() {
     private lateinit var tradeImageView: ImageView
     private lateinit var noImageTextView: TextView
 
+    /*
+     * Activity Result API per modificare il trade.
+     * AddTradeActivity restituisce i campi aggiornati tramite Intent.
+     */
     private val editTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -82,6 +96,9 @@ class TradeDetailActivity : AppCompatActivity() {
             }
         }
 
+    /*
+     * Controlla login, carica il layout e recupera il trade da mostrare.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -99,6 +116,9 @@ class TradeDetailActivity : AppCompatActivity() {
         setupActions()
     }
 
+    /*
+     * Collega le View XML al codice Kotlin.
+     */
     private fun bindViews() {
         assetTextView = findViewById(R.id.detailAssetText)
         typeTextView = findViewById(R.id.detailTypeText)
@@ -117,6 +137,9 @@ class TradeDetailActivity : AppCompatActivity() {
         noImageTextView = findViewById(R.id.detailNoImageText)
     }
 
+    /*
+     * Legge l'id ricevuto tramite Intent e recupera il Trade dal DAO.
+     */
     private fun loadTrade() {
         val tradeId = intent.getLongExtra("trade_id", -1)
 
@@ -135,10 +158,12 @@ class TradeDetailActivity : AppCompatActivity() {
         renderTrade(currentTrade!!)
     }
 
+    /*
+     * Registra le azioni utente della schermata.
+     */
     private fun setupActions() {
         /*
-         * Modifica senza cambiare XML:
-         * tieni premuto sul nome dell'asset per aprire la schermata edit.
+         * Long click come scorciatoia per aprire la modifica senza cambiare layout.
          */
         assetTextView.setOnLongClickListener {
             openEditTrade()
@@ -150,6 +175,9 @@ class TradeDetailActivity : AppCompatActivity() {
             true
         }
 
+        /*
+         * Elimina il trade dal database e mostra una notifica di conferma.
+         */
         deleteTradeButton.setOnClickListener {
             currentTrade?.let { trade ->
                 database.tradeDao().deleteTrade(trade)
@@ -164,6 +192,9 @@ class TradeDetailActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Aggiorna la UI con i dati del trade corrente.
+     */
     private fun renderTrade(trade: Trade) {
         assetTextView.text = trade.asset
         typeTextView.text = "${trade.type} • ${trade.direction.ifBlank { "N/A" }}"
@@ -194,6 +225,10 @@ class TradeDetailActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Apre AddTradeActivity in modalità modifica.
+     * Gli extras trasferiscono tutti i campi necessari al form.
+     */
     private fun openEditTrade() {
         val trade = currentTrade ?: return
 

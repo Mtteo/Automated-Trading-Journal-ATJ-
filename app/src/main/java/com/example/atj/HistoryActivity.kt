@@ -16,6 +16,10 @@ import com.example.atj.ui.HistoryTradeAdapter
 import com.example.atj.utils.SessionManager
 import com.example.atj.utils.TradeStateHelper
 
+/*
+ * Activity dello storico trade.
+ * Mostra i trade divisi per stato e permette dettaglio o modifica.
+ */
 class HistoryActivity : AppCompatActivity() {
 
     private lateinit var database: AppDatabase
@@ -38,6 +42,10 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var losingAdapter: HistoryTradeAdapter
     private lateinit var openAdapter: HistoryTradeAdapter
 
+    /*
+     * Activity Result API per modificare un trade.
+     * AddTradeActivity restituisce i dati aggiornati tramite Intent.
+     */
     private val editTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -88,6 +96,9 @@ class HistoryActivity : AppCompatActivity() {
             }
         }
 
+    /*
+     * Controlla la sessione, carica layout e inizializza le liste.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -106,11 +117,17 @@ class HistoryActivity : AppCompatActivity() {
         loadTrades()
     }
 
+    /*
+     * Aggiorna lo storico quando la Activity torna in primo piano.
+     */
     override fun onResume() {
         super.onResume()
         loadTrades()
     }
 
+    /*
+     * Collega le View definite nel layout XML.
+     */
     private fun bindViews() {
         winningSectionTitle = findViewById(R.id.winningSectionTitle)
         losingSectionTitle = findViewById(R.id.losingSectionTitle)
@@ -125,6 +142,9 @@ class HistoryActivity : AppCompatActivity() {
         openEmptyText = findViewById(R.id.openEmptyText)
     }
 
+    /*
+     * Configura tre RecyclerView: vincenti, perdenti e aperti/BE.
+     */
     private fun setupLists() {
         winningAdapter = HistoryTradeAdapter(
             trades = mutableListOf(),
@@ -153,6 +173,9 @@ class HistoryActivity : AppCompatActivity() {
         openRecyclerView.adapter = openAdapter
     }
 
+    /*
+     * Legge i trade dal database e li divide in sezioni.
+     */
     private fun loadTrades() {
         val trades = database.tradeDao()
             .getTradesByUserId(currentUserId)
@@ -197,6 +220,9 @@ class HistoryActivity : AppCompatActivity() {
         )
     }
 
+    /*
+     * Mostra il testo vuoto oppure la lista in base ai dati disponibili.
+     */
     private fun updateSectionVisibility(
         trades: List<Trade>,
         recyclerView: RecyclerView,
@@ -217,6 +243,9 @@ class HistoryActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Apre il dettaglio del trade tramite Intent esplicito.
+     */
     private fun openTradeDetail(trade: Trade) {
         val intent = Intent(this, TradeDetailActivity::class.java).apply {
             putExtra("trade_id", trade.id)
@@ -225,6 +254,10 @@ class HistoryActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /*
+     * Apre AddTradeActivity in modalità modifica.
+     * I dati del trade vengono passati tramite extras dell'Intent.
+     */
     private fun openEditTrade(trade: Trade) {
         tradeBeingEdited = trade
 

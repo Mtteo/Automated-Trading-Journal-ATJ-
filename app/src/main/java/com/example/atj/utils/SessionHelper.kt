@@ -5,10 +5,16 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-// Utility per calcolare la sessione di mercato in base all'orario locale.
+/*
+ * Utility per ricavare la sessione di mercato dall'orario locale.
+ * Centralizza questa logica invece di ripeterla nelle Activity.
+ */
 object SessionHelper {
 
-    // Calcola la sessione partendo da un timestamp in millisecondi.
+    /*
+     * Calcola la sessione partendo da un timestamp.
+     * Calendar converte i millisecondi in ora e minuti locali.
+     */
     fun getSessionFromTimestamp(timestampMillis: Long): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timestampMillis
@@ -19,7 +25,9 @@ object SessionHelper {
         return getSessionFromHourMinute(hour, minute)
     }
 
-    // Calcola la sessione dall'orario corrente locale.
+    /*
+     * Calcola la sessione corrente usando l'orario del dispositivo.
+     */
     fun getCurrentSession(): String {
         val now = Calendar.getInstance()
         val hour = now.get(Calendar.HOUR_OF_DAY)
@@ -28,11 +36,10 @@ object SessionHelper {
         return getSessionFromHourMinute(hour, minute)
     }
 
-    // Regole definite da te:
-    // 01:00 - 08:59 -> Asia
-    // 09:00 - 14:29 -> London
-    // 14:30 - 23:59 -> NY
-    // 00:00 - 00:59 -> Sydney
+    /*
+     * Regole orarie delle sessioni.
+     * when rende chiara la scelta tra i diversi intervalli.
+     */
     private fun getSessionFromHourMinute(hour: Int, minute: Int): String {
         return when {
             hour == 0 -> "Sydney"
@@ -43,7 +50,9 @@ object SessionHelper {
         }
     }
 
-    // Formatta la data da timestamp in forma leggibile.
+    /*
+     * Formatta un timestamp in una data leggibile per la UI.
+     */
     fun formatDateFromTimestamp(timestampMillis: Long): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         return formatter.format(Date(timestampMillis))

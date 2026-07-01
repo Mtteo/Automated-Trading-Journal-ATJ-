@@ -5,26 +5,15 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
 
-/**
- * Utility per mostrare immagini con orientamento corretto.
- *
- * Problema risolto:
- * alcune immagini prese dalla galleria hanno metadati EXIF
- * che indicano una rotazione, ma BitmapFactory.decodeFile()
- * non la applica automaticamente.
- *
- * Questa utility:
- * - legge il file salvato internamente
- * - controlla l'orientamento EXIF
- * - ruota il bitmap se necessario
+/*
+ * Utility per caricare immagini rispettando l'orientamento EXIF.
+ * Alcune immagini salvano la rotazione nei metadati, non direttamente nel bitmap.
  */
 object ImageDisplayHelper {
 
-    /**
-     * Decodifica un file immagine e restituisce un bitmap già ruotato correttamente.
-     *
-     * @param imagePath percorso assoluto del file immagine
-     * @return bitmap corretto oppure null se il file non è leggibile
+    /*
+     * Decodifica il file immagine e, se necessario, ruota il Bitmap.
+     * Ritorna null se il path è vuoto o il file non può essere letto.
      */
     fun loadCorrectlyOrientedBitmap(imagePath: String?): Bitmap? {
         if (imagePath.isNullOrBlank()) return null
@@ -38,6 +27,7 @@ object ImageDisplayHelper {
                 ExifInterface.ORIENTATION_NORMAL
             )
 
+            // Traduce il valore EXIF in un angolo di rotazione effettivo.
             val rotationAngle = when (orientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> 90f
                 ExifInterface.ORIENTATION_ROTATE_180 -> 180f
@@ -63,8 +53,7 @@ object ImageDisplayHelper {
                 )
             }
         } catch (e: Exception) {
-            // Se per qualsiasi motivo EXIF non è leggibile,
-            // mostriamo comunque il bitmap originale.
+            // Se i metadati EXIF non sono leggibili, l'app mostra comunque l'immagine.
             originalBitmap
         }
     }

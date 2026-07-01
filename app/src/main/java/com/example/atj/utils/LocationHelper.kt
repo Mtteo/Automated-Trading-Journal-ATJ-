@@ -9,10 +9,16 @@ import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import java.util.Locale
 
-// Utility semplice per ottenere un luogo leggibile dal device.
-// Salviamo un testo utile, non latitudine/longitudine.
+/*
+ * Utility per ricavare una posizione testuale dal dispositivo.
+ * Usa i servizi di localizzazione Android e il reverse geocoding.
+ */
 object LocationHelper {
 
+    /*
+     * Controlla se l'app ha almeno un permesso di localizzazione.
+     * Android richiede sia dichiarazione nel Manifest sia controllo runtime.
+     */
     fun hasLocationPermission(context: Context): Boolean {
         val fineGranted = ContextCompat.checkSelfPermission(
             context,
@@ -27,6 +33,10 @@ object LocationHelper {
         return fineGranted || coarseGranted
     }
 
+    /*
+     * Recupera l'ultima posizione nota e la converte in testo.
+     * LocationManager è un System Service ottenuto tramite Context.
+     */
     fun getCurrentLocationText(context: Context): String {
         if (!hasLocationPermission(context)) {
             return "Permission not granted"
@@ -40,6 +50,9 @@ object LocationHelper {
 
             var bestLocation: Location? = null
 
+            /*
+             * Tra i provider disponibili sceglie la posizione con accuratezza migliore.
+             */
             for (provider in providers) {
                 val location = locationManager.getLastKnownLocation(provider)
                 if (location != null) {
@@ -59,6 +72,9 @@ object LocationHelper {
         }
     }
 
+    /*
+     * Reverse geocoding: converte latitudine e longitudine in città/nazione.
+     */
     private fun reverseGeocode(context: Context, latitude: Double, longitude: Double): String {
         return try {
             val geocoder = Geocoder(context, Locale.getDefault())

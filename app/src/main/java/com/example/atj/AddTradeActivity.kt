@@ -26,8 +26,16 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/*
+ * Activity per aggiungere o modificare un trade.
+ * Usa input manuali, immagine, posizione, strategia e note vocali.
+ */
 class AddTradeActivity : AppCompatActivity() {
 
+    /*
+     * View principali del form.
+     * lateinit è usato perché le View esistono solo dopo il caricamento del layout XML.
+     */
     private lateinit var assetEditText: EditText
     private lateinit var typeSpinner: Spinner
     private lateinit var directionSpinner: Spinner
@@ -58,10 +66,18 @@ class AddTradeActivity : AppCompatActivity() {
     private lateinit var noChecklistText: TextView
     private lateinit var locationInput: EditText
 
+    /*
+     * Stato locale della schermata.
+     * selectedImagePath conserva il file interno associato al trade.
+     */
     private var selectedImagePath: String? = null
     private var isEditMode: Boolean = false
     private val checklistCheckBoxes = mutableListOf<CheckBox>()
 
+    /*
+     * Activity Result API per scegliere una foto dalla galleria.
+     * È il modo moderno per ricevere risultati da altre Activity.
+     */
     private val pickMediaLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
@@ -71,6 +87,9 @@ class AddTradeActivity : AppCompatActivity() {
             }
         }
 
+    /*
+     * Activity Result API per acquisire una foto preview dalla fotocamera.
+     */
     private val takePicturePreviewLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             if (bitmap != null) {
@@ -80,6 +99,9 @@ class AddTradeActivity : AppCompatActivity() {
             }
         }
 
+    /*
+     * Activity Result API per ricevere testo dal riconoscimento vocale.
+     */
     private val speechToTextLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -96,6 +118,10 @@ class AddTradeActivity : AppCompatActivity() {
             }
         }
 
+    /*
+     * onCreate prepara la UI e registra i listener.
+     * In edit mode riempie i campi con i dati ricevuti tramite Intent.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_trade)
@@ -133,6 +159,9 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Collega le View XML agli oggetti Kotlin tramite gli id generati in R.
+     */
     private fun bindViews() {
         assetEditText = findViewById(R.id.assetEditText)
         typeSpinner = findViewById(R.id.typeSpinner)
@@ -165,6 +194,10 @@ class AddTradeActivity : AppCompatActivity() {
         locationInput = findViewById(R.id.locationInput)
     }
 
+    /*
+     * Configura gli Spinner con valori fissi.
+     * ArrayAdapter collega una lista di stringhe al widget grafico.
+     */
     private fun setupSpinners() {
         val tradeTypes = listOf("Buy", "Sell")
         val directionTypes = listOf("Long", "Short")
@@ -186,6 +219,10 @@ class AddTradeActivity : AppCompatActivity() {
         directionSpinner.adapter = directionAdapter
     }
 
+    /*
+     * Precompila data, sessione e posizione.
+     * Usa helper separati per non mettere tutta la logica nella Activity.
+     */
     private fun prefillAutomaticFields() {
         val now = System.currentTimeMillis()
 
@@ -196,6 +233,9 @@ class AddTradeActivity : AppCompatActivity() {
         locationInput.setText(LocationHelper.getCurrentLocationText(this))
     }
 
+    /*
+     * In modalità modifica ricostruisce il form dai dati passati tramite Intent.
+     */
     private fun populateFieldsFromIntent() {
         assetEditText.setText(intent.getStringExtra("asset") ?: "")
         dateEditText.setText(intent.getStringExtra("date") ?: "")
@@ -230,6 +270,9 @@ class AddTradeActivity : AppCompatActivity() {
         restoreChecklistChecks(checkedConfluences)
     }
 
+    /*
+     * Seleziona nello Spinner il valore ricevuto.
+     */
     private fun setSpinnerSelection(spinner: Spinner, value: String) {
         for (i in 0 until spinner.count) {
             val item = spinner.getItemAtPosition(i).toString()
@@ -240,6 +283,9 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Ripristina le checkbox già selezionate durante la modifica di un trade.
+     */
     private fun restoreChecklistChecks(checkedConfluences: String) {
         if (checkedConfluences.isBlank()) return
 
@@ -255,10 +301,17 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Evita di mostrare 0.0 nei campi vuoti del form.
+     */
     private fun doubleToInput(value: Double): String {
         return if (value == 0.0) "" else value.toString()
     }
 
+    /*
+     * Crea dinamicamente la checklist della strategia salvata.
+     * Qui la UI viene generata da codice perché il numero di item è variabile.
+     */
     private fun renderStrategyChecklist() {
         val strategy = StrategyManager.getStrategy(this)
 
@@ -288,6 +341,9 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Mostra l'immagine selezionata o nasconde la preview se non esiste.
+     */
     private fun showPreviewImage(imagePath: String?) {
         val correctedBitmap = ImageDisplayHelper.loadCorrectlyOrientedBitmap(imagePath)
 
@@ -300,6 +356,10 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Valida i campi principali e restituisce il trade alla Activity chiamante.
+     * setResult permette alla schermata precedente di ricevere i dati senza salvarli qui.
+     */
     private fun saveTrade() {
         val asset = assetEditText.text.toString().trim()
         val type = typeSpinner.selectedItem.toString()
@@ -349,6 +409,10 @@ class AddTradeActivity : AppCompatActivity() {
             oldConfluenceScore
         }
 
+        /*
+         * Intent di risultato: contiene tutti i dati compilati nel form.
+         * La Activity chiamante deciderà se inserire o aggiornare il Trade nel database.
+         */
         val resultIntent = Intent().apply {
             putExtra("asset", asset)
             putExtra("type", type)
@@ -379,6 +443,10 @@ class AddTradeActivity : AppCompatActivity() {
         finish()
     }
 
+    /*
+     * Avvia l'Intent implicito di riconoscimento vocale.
+     * Se il device non supporta questa funzione, viene mostrato un Toast.
+     */
     private fun startVoiceRecognition() {
         try {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -400,6 +468,9 @@ class AddTradeActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Aggiunge il testo riconosciuto alle note del trade.
+     */
     private fun appendVoiceReflectionToNotes(recognizedText: String) {
         val currentNotes = notesInput.text.toString().trim()
 

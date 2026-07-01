@@ -6,13 +6,16 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * Parser del payload JSON simulato.
- *
- * Trasforma il JSON in un Trade ricco di informazioni.
+/*
+ * Parser dei trade ricevuti in formato JSON.
+ * Simula il passaggio da dato esterno a Entity utilizzabile dall'app.
  */
 object TradeEventParser {
 
+    /*
+     * Converte il JSON in un oggetto Trade.
+     * optString/optDouble evitano crash se qualche campo manca nel payload.
+     */
     fun parseTradeEvent(json: String, userId: Long): Trade {
         val jsonObject = JSONObject(json)
 
@@ -27,6 +30,7 @@ object TradeEventParser {
         val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
             .format(Date(timestamp))
 
+        // La sessione viene calcolata centralmente, non duplicata qui.
         val session = SessionHelper.getSessionFromTimestamp(timestamp)
 
         return Trade(

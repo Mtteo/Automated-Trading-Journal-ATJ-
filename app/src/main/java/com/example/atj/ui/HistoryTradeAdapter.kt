@@ -11,12 +11,20 @@ import com.example.atj.R
 import com.example.atj.model.Trade
 import com.example.atj.utils.TradeStateHelper
 
+/*
+ * Adapter per la schermata storico.
+ * Trasforma una lista di Trade in righe grafiche dentro una RecyclerView.
+ */
 class HistoryTradeAdapter(
     private val trades: MutableList<Trade>,
     private val onItemClick: (Trade) -> Unit,
     private val onItemLongClick: (Trade) -> Unit
 ) : RecyclerView.Adapter<HistoryTradeAdapter.HistoryTradeViewHolder>() {
 
+    /*
+     * ViewHolder della singola riga.
+     * Mantiene i riferimenti alle View per evitare findViewById ripetuti.
+     */
     class HistoryTradeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val biasIconText: TextView = itemView.findViewById(R.id.biasIconText)
         val assetText: TextView = itemView.findViewById(R.id.assetText)
@@ -26,12 +34,20 @@ class HistoryTradeAdapter(
         val sessionText: TextView = itemView.findViewById(R.id.sessionText)
     }
 
+    /*
+     * Crea la View della riga partendo dal layout XML.
+     * LayoutInflater converte la risorsa item_history_trade in oggetti View.
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryTradeViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_history_trade, parent, false)
         return HistoryTradeViewHolder(view)
     }
 
+    /*
+     * Collega il Trade alla riga visibile.
+     * RecyclerView richiama questo metodo quando deve mostrare o riusare una cella.
+     */
     override fun onBindViewHolder(holder: HistoryTradeViewHolder, position: Int) {
         val trade = trades[position]
         val displayState = TradeStateHelper.displayState(trade)
@@ -42,26 +58,39 @@ class HistoryTradeAdapter(
         holder.dateText.text = trade.date
         holder.sessionText.text = "${trade.session} • PnL ${trade.pnlAmount}"
 
+        // Applica colori e badge in base allo stato del trade.
         applyVisualStyle(holder, trade, displayState)
 
+        // Listener per apertura/dettaglio del trade.
         holder.itemView.setOnClickListener {
             onItemClick(trade)
         }
 
+        // Listener per azioni secondarie, ad esempio modifica o cancellazione.
         holder.itemView.setOnLongClickListener {
             onItemLongClick(trade)
             true
         }
     }
 
+    /*
+     * Numero di righe gestite dalla RecyclerView.
+     */
     override fun getItemCount(): Int = trades.size
 
+    /*
+     * Aggiorna l'intera lista mostrata nello storico.
+     */
     fun replaceTrades(newTrades: List<Trade>) {
         trades.clear()
         trades.addAll(newTrades)
         notifyDataSetChanged()
     }
 
+    /*
+     * Gestisce lo stile visuale della riga.
+     * La UI cambia in base al risultato del trade, senza modificare il dato salvato.
+     */
     private fun applyVisualStyle(
         holder: HistoryTradeViewHolder,
         trade: Trade,
@@ -138,6 +167,10 @@ class HistoryTradeAdapter(
         }
     }
 
+    /*
+     * Crea graficamente un badge tramite GradientDrawable.
+     * È una modifica programmatica della View, alternativa agli attributi XML.
+     */
     private fun styleBadge(
         textView: TextView,
         backgroundColor: String,

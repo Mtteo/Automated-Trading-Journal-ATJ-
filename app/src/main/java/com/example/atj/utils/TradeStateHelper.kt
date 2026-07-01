@@ -2,6 +2,10 @@ package com.example.atj.utils
 
 import com.example.atj.model.Trade
 
+/*
+ * Utility per normalizzare e leggere lo stato dei trade.
+ * Centralizza le regole invece di ripeterle in Activity, Adapter e statistiche.
+ */
 object TradeStateHelper {
 
     const val STATUS_OPEN = "OPEN"
@@ -12,6 +16,10 @@ object TradeStateHelper {
     const val OUTCOME_LOSS = "LOSS"
     const val OUTCOME_BE = "BE"
 
+    /*
+     * Normalizza result e aggiorna i campi tecnici tradeStatus/tradeOutcome.
+     * copy() mantiene immutabilità pratica: crea un Trade modificato senza alterare l'originale.
+     */
     fun normalizeTrade(trade: Trade): Trade {
         val normalizedResult = normalizeResult(trade.result)
 
@@ -34,26 +42,44 @@ object TradeStateHelper {
         )
     }
 
+    /*
+     * Verifica se il trade è ancora aperto.
+     */
     fun isOpen(trade: Trade): Boolean {
         return trade.tradeStatus.equals(STATUS_OPEN, ignoreCase = true)
     }
 
+    /*
+     * Verifica se il trade è chiuso.
+     */
     fun isClosed(trade: Trade): Boolean {
         return trade.tradeStatus.equals(STATUS_CLOSED, ignoreCase = true)
     }
 
+    /*
+     * Verifica se il trade è vincente.
+     */
     fun isWin(trade: Trade): Boolean {
         return trade.tradeOutcome.equals(OUTCOME_WIN, ignoreCase = true)
     }
 
+    /*
+     * Verifica se il trade è perdente.
+     */
     fun isLoss(trade: Trade): Boolean {
         return trade.tradeOutcome.equals(OUTCOME_LOSS, ignoreCase = true)
     }
 
+    /*
+     * Verifica se il trade è chiuso a pareggio.
+     */
     fun isBreakEven(trade: Trade): Boolean {
         return trade.tradeOutcome.equals(OUTCOME_BE, ignoreCase = true)
     }
 
+    /*
+     * Restituisce una label pronta per la UI.
+     */
     fun displayState(trade: Trade): String {
         return if (isOpen(trade)) {
             "Open"
@@ -67,6 +93,10 @@ object TradeStateHelper {
         }
     }
 
+    /*
+     * Uniforma possibili valori testuali dello stesso risultato.
+     * Utile perché i dati possono arrivare da input manuale o JSON simulato.
+     */
     fun normalizeResult(rawResult: String): String {
         val clean = rawResult.trim()
 

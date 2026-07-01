@@ -23,13 +23,26 @@ import com.example.atj.utils.TradeStateHelper
 import com.google.android.material.button.MaterialButton
 import java.util.Locale
 
+/*
+ * Activity principale dell'app.
+ * Funziona da dashboard: mostra statistiche, gestisce navigazione e inserimento trade.
+ */
 class MainActivity : AppCompatActivity() {
 
+    /*
+     * Database Room usato per leggere e salvare i trade dell'utente corrente.
+     */
     private lateinit var database: AppDatabase
 
+    /*
+     * Dati della sessione utente salvati localmente tramite SessionManager.
+     */
     private var currentUserId: Long = -1L
     private var username: String = ""
 
+    /*
+     * View della dashboard collegate dal layout XML.
+     */
     private lateinit var welcomeTitleText: TextView
     private lateinit var welcomeSubtitleText: TextView
 
@@ -52,14 +65,25 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var addTradeMenuContainer: View
 
+    /*
+     * Stato locale usato per mostrare o nascondere il menu di aggiunta.
+     */
     private var isAddMenuVisible = false
 
+    /*
+     * Activity Result API per ricevere un trade creato da AddTradeActivity.
+     * È il metodo moderno rispetto a startActivityForResult deprecato.
+     */
     private val addTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode != RESULT_OK) return@registerForActivityResult
 
             val data = result.data ?: return@registerForActivityResult
 
+            /*
+             * Ricostruisce l'Entity Trade dai dati restituiti tramite Intent.
+             * La MainActivity si occupa poi del salvataggio nel database.
+             */
             val trade = Trade(
                 userId = currentUserId,
                 source = "manual",
@@ -104,6 +128,10 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Trade saved", Toast.LENGTH_SHORT).show()
         }
 
+    /*
+     * Launcher per il permesso runtime delle notifiche.
+     * Da Android 13 il permesso POST_NOTIFICATIONS va richiesto all'utente.
+     */
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (!granted) {
@@ -111,6 +139,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    /*
+     * onCreate inizializza database, sessione, layout, listener e statistiche.
+     * Se non c'è login, l'utente viene rimandato alla LoginActivity.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -134,6 +166,10 @@ class MainActivity : AppCompatActivity() {
         updateDashboardStats()
     }
 
+    /*
+     * onResume aggiorna i dati quando la dashboard torna in primo piano.
+     * Utile dopo inserimenti, modifiche o cambiamenti di sessione.
+     */
     override fun onResume() {
         super.onResume()
 
@@ -154,6 +190,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Collega le View XML agli oggetti Kotlin tramite findViewById.
+     */
     private fun bindViews() {
         welcomeTitleText = findViewById(R.id.welcomeTitleText)
         welcomeSubtitleText = findViewById(R.id.welcomeSubtitleText)
@@ -180,6 +219,9 @@ class MainActivity : AppCompatActivity() {
         addTradeMenuContainer = findViewById(R.id.addTradeMenuContainer)
     }
 
+    /*
+     * Configura canale notifiche, allarmi giornalieri e permesso runtime.
+     */
     private fun setupNotifications() {
         NotificationHelper.createNotificationChannel(this)
         NotificationHelper.scheduleAllSessionNotifications(this)
@@ -196,6 +238,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Registra i listener dei pulsanti.
+     * Ogni click attiva una navigazione o una funzione della dashboard.
+     */
     private fun setupClickListeners() {
         toggleAddMenuButton.setOnClickListener {
             toggleAddMenu()
@@ -228,6 +274,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Prepara dati demo se l'utente corrente è un profilo demo.
+     * Serve per avere una presentazione già popolata e testabile.
+     */
     private fun prepareDemoContentIfNeeded() {
         DemoDataSeeder.prepareDemoDataForUser(
             context = this,
@@ -241,6 +291,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Legge i trade dal database e aggiorna le metriche della dashboard.
+     */
     private fun updateDashboardStats() {
         val trades = database.tradeDao()
             .getTradesByUserId(currentUserId)
@@ -286,6 +339,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Costruisce il sottotitolo della dashboard in base allo stato del journal.
+     */
     private fun buildWelcomeSubtitle(trades: List<Trade>): String {
         if (trades.isEmpty()) {
             return if (DemoDataSeeder.isDemoProfile(username)) {
@@ -305,6 +361,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Simula un evento JSON esterno.
+     * Il payload viene parsato e salvato come Trade nel database Room.
+     */
     private fun simulateTradeEvent() {
         val json = JsonSimulationSamples.getNextSampleJson(
             database.tradeDao().getTradesByUserId(currentUserId).size
@@ -333,6 +393,9 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Simulated JSON trade saved", Toast.LENGTH_SHORT).show()
     }
 
+    /*
+     * Mostra o nasconde il menu di aggiunta trade.
+     */
     private fun toggleAddMenu() {
         isAddMenuVisible = !isAddMenuVisible
 
@@ -349,12 +412,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Chiude il menu di aggiunta dopo salvataggio o simulazione.
+     */
     private fun hideAddMenu() {
         isAddMenuVisible = false
         addTradeMenuContainer.visibility = View.GONE
         toggleAddMenuButton.text = "+"
     }
 
+    /*
+     * Torna al login cancellando il back stack.
+     * Così l'utente non può rientrare nella dashboard con il tasto Back dopo il logout.
+     */
     private fun openLoginAndClose() {
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

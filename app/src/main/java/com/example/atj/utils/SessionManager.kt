@@ -2,13 +2,20 @@ package com.example.atj.utils
 
 import android.content.Context
 
-// Gestisce la sessione utente loggato.
+/*
+ * Gestisce la sessione dell'utente loggato.
+ * Usa SharedPreferences perché salva pochi dati semplici in formato key-value.
+ */
 object SessionManager {
 
     private const val PREFS_NAME = "atj_session_prefs"
     private const val KEY_LOGGED_IN_USER_ID = "logged_in_user_id"
     private const val KEY_LOGGED_IN_USERNAME = "logged_in_username"
 
+    /*
+     * Salva id e username dell'utente autenticato.
+     * apply() scrive in modo asincrono senza bloccare inutilmente la UI.
+     */
     fun saveLogin(context: Context, userId: Long, username: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit()
@@ -17,20 +24,32 @@ object SessionManager {
             .apply()
     }
 
+    /*
+     * Cancella i dati di sessione locale.
+     */
     fun logout(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
     }
 
+    /*
+     * L'utente è considerato loggato se esiste un id valido.
+     */
     fun isLoggedIn(context: Context): Boolean {
         return getLoggedInUserId(context) != -1L
     }
 
+    /*
+     * Restituisce l'id dell'utente loggato o -1 se non esiste.
+     */
     fun getLoggedInUserId(context: Context): Long {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getLong(KEY_LOGGED_IN_USER_ID, -1L)
     }
 
+    /*
+     * Restituisce lo username salvato nella sessione.
+     */
     fun getLoggedInUsername(context: Context): String {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getString(KEY_LOGGED_IN_USERNAME, "") ?: ""

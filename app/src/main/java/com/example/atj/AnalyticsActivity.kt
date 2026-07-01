@@ -14,8 +14,15 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+/*
+ * Activity dedicata alle analytics.
+ * Legge i trade dal database locale e li trasforma in statistiche e calendario.
+ */
 class AnalyticsActivity : AppCompatActivity() {
 
+    /*
+     * TextView della dashboard analytics.
+     */
     private lateinit var monthTitleText: TextView
     private lateinit var monthSubtitleText: TextView
 
@@ -30,12 +37,18 @@ class AnalyticsActivity : AppCompatActivity() {
     private lateinit var sourceBreakdownValueText: TextView
     private lateinit var sessionBreakdownValueText: TextView
 
+    /*
+     * RecyclerView usata come griglia calendario.
+     */
     private lateinit var calendarRecyclerView: RecyclerView
     private lateinit var calendarAdapter: CalendarDayAdapter
 
     private lateinit var database: AppDatabase
     private var currentUserId: Long = -1L
 
+    /*
+     * Inizializza layout, database, RecyclerView e dati analytics.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analytics)
@@ -48,6 +61,9 @@ class AnalyticsActivity : AppCompatActivity() {
         loadAnalytics()
     }
 
+    /*
+     * Collega gli elementi XML al codice Kotlin.
+     */
     private fun bindViews() {
         monthTitleText = findViewById(R.id.monthTitleText)
         monthSubtitleText = findViewById(R.id.monthSubtitleText)
@@ -66,12 +82,19 @@ class AnalyticsActivity : AppCompatActivity() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
     }
 
+    /*
+     * Configura la RecyclerView come griglia a 7 colonne.
+     * GridLayoutManager è adatto alla rappresentazione del calendario.
+     */
     private fun setupCalendar() {
         calendarAdapter = CalendarDayAdapter(mutableListOf())
         calendarRecyclerView.layoutManager = GridLayoutManager(this, 7)
         calendarRecyclerView.adapter = calendarAdapter
     }
 
+    /*
+     * Carica i trade dell'utente e calcola le statistiche principali.
+     */
     private fun loadAnalytics() {
         val trades = database.tradeDao().getTradesByUserId(currentUserId)
 
@@ -93,7 +116,13 @@ class AnalyticsActivity : AppCompatActivity() {
 
         val monthlyPnl = trades.sumOf { it.pnlAmount }
 
-        monthTitleText.text = getCurrentMonthLabel()
+        /*
+         * Prima il calendario usava sempre il mese corrente.
+         * Ora usa il mese dell'ultimo trade disponibile, così non resta vuoto con dati vecchi.
+         */
+        val referenceCalendar = findReferenceCalendar(trades)
+
+        monthTitleText.text = getMonthLabel(referenceCalendar)
         monthSubtitleText.text = if (totalTrades == 0) {
             "No trades saved yet."
         } else {
@@ -111,16 +140,21 @@ class AnalyticsActivity : AppCompatActivity() {
         sourceBreakdownValueText.text = buildSourceBreakdown(trades)
         sessionBreakdownValueText.text = buildSessionBreakdownText(trades)
 
-        val calendarItems = buildCalendarItemsForCurrentMonth(trades)
+        val calendarItems = buildCalendarItemsForMonth(trades, referenceCalendar)
         calendarAdapter.replaceItems(calendarItems)
     }
 
-    private fun buildCalendarItemsForCurrentMonth(trades: List<Trade>): List<CalendarDayUiModel> {
+    /*
+     * Costruisce le celle del calendario per il mese scelto.
+     */
+    private fun buildCalendarItemsForMonth(
+        trades: List<Trade>,
+        referenceCalendar: Calendar
+    ): List<CalendarDayUiModel> {
         val calendarItems = mutableListOf<CalendarDayUiModel>()
 
-        val currentCalendar = Calendar.getInstance()
-        val year = currentCalendar.get(Calendar.YEAR)
-        val month = currentCalendar.get(Calendar.MONTH)
+        val year = referenceCalendar.get(Calendar.YEAR)
+        val month = referenceCalendar.get(Calendar.MONTH)
 
         val firstDayCalendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
@@ -149,13 +183,17 @@ class AnalyticsActivity : AppCompatActivity() {
         }
 
         val monthTradesByDay = trades
-            .filter { isTradeInCurrentMonth(it, year, month) }
+            .filter { isTradeInMonth(it, year, month) }
             .groupBy { extractDayOfMonth(it) }
 
         for (day in 1..daysInMonth) {
             val dayTrades = monthTradesByDay[day].orEmpty()
             val status = determineDayStatus(dayTrades)
-            val infoText = if (dayTrades.isEmpty()) "" else String.format(Locale.getDefault(), "%.0f", dayTrades.sumOf { it.pnlAmount })
+            val infoText = if (dayTrades.isEmpty()) {
+                ""
+            } else {
+                String.format(Locale.getDefault(), "%.0f", dayTrades.sumOf { it.pnlAmount })
+            }
 
             calendarItems.add(
                 CalendarDayUiModel(
@@ -169,6 +207,9 @@ class AnalyticsActivity : AppCompatActivity() {
         return calendarItems
     }
 
+    /*
+     * Decide il colore/stato della cella in base ai trade del giorno.
+     */
     private fun determineDayStatus(dayTrades: List<Trade>): CalendarDayUiModel.Status {
         if (dayTrades.isEmpty()) return CalendarDayUiModel.Status.NONE
 
@@ -183,25 +224,40 @@ class AnalyticsActivity : AppCompatActivity() {
         }
     }
 
-    private fun isTradeInCurrentMonth(trade: Trade, targetYear: Int, targetMonth: Int): Boolean {
+    /*
+     * Verifica se il trade appartiene al mese mostrato.
+     */
+    private fun isTradeInMonth(trade: Trade, targetYear: Int, targetMonth: Int): Boolean {
         val calendar = parseTradeDateToCalendar(trade.date) ?: return false
         return calendar.get(Calendar.YEAR) == targetYear &&
                 calendar.get(Calendar.MONTH) == targetMonth
     }
 
+    /*
+     * Estrae il giorno del mese dalla data del trade.
+     */
     private fun extractDayOfMonth(trade: Trade): Int {
         val calendar = parseTradeDateToCalendar(trade.date) ?: return -1
         return calendar.get(Calendar.DAY_OF_MONTH)
     }
 
+    /*
+     * Converte una data testuale in Calendar.
+     * Accetta più formati per evitare calendari vuoti se cambia il formato data.
+     */
     private fun parseTradeDateToCalendar(dateText: String): Calendar? {
         val formats = listOf(
             SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()),
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
+            SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()),
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()),
+            SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault()),
+            SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
         )
 
         for (format in formats) {
             try {
+                format.isLenient = false
                 val date = format.parse(dateText)
                 if (date != null) {
                     return Calendar.getInstance().apply { time = date }
@@ -213,13 +269,32 @@ class AnalyticsActivity : AppCompatActivity() {
         return null
     }
 
-    private fun getCurrentMonthLabel(): String {
+    /*
+     * Sceglie il mese da mostrare.
+     * Se ci sono trade con data valida, usa quello più recente.
+     */
+    private fun findReferenceCalendar(trades: List<Trade>): Calendar {
+        val validCalendars = trades.mapNotNull { trade ->
+            parseTradeDateToCalendar(trade.date)
+        }
+
+        return validCalendars.maxByOrNull { it.timeInMillis }
+            ?: Calendar.getInstance()
+    }
+
+    /*
+     * Restituisce il nome del mese mostrato nel calendario.
+     */
+    private fun getMonthLabel(calendar: Calendar): String {
         val formatter = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-        return formatter.format(Calendar.getInstance().time).replaceFirstChar {
+        return formatter.format(calendar.time).replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
         }
     }
 
+    /*
+     * Trova l'asset con PnL totale migliore.
+     */
     private fun findBestAssetByPnl(trades: List<Trade>): String {
         if (trades.isEmpty()) return "No data"
         val grouped = trades.groupBy { it.asset }
@@ -228,6 +303,9 @@ class AnalyticsActivity : AppCompatActivity() {
         return "${best.key} (${String.format(Locale.getDefault(), "%.2f", pnl)})"
     }
 
+    /*
+     * Trova la sessione con PnL totale migliore.
+     */
     private fun findBestSessionByPnl(trades: List<Trade>): String {
         if (trades.isEmpty()) return "No data"
         val grouped = trades.groupBy { it.session }
@@ -236,12 +314,19 @@ class AnalyticsActivity : AppCompatActivity() {
         return "${best.key} (${String.format(Locale.getDefault(), "%.2f", pnl)})"
     }
 
+    /*
+     * Conta quanti trade arrivano da inserimento manuale, JSON e demo.
+     */
     private fun buildSourceBreakdown(trades: List<Trade>): String {
         val manual = trades.count { it.source.equals("manual", ignoreCase = true) }
         val json = trades.count { it.source.equals("json", ignoreCase = true) }
-        return "Manual $manual • JSON $json"
+        val demo = trades.count { it.source.equals("demo", ignoreCase = true) }
+        return "Manual $manual • JSON $json • Demo $demo"
     }
 
+    /*
+     * Crea un riepilogo PnL diviso per sessione.
+     */
     private fun buildSessionBreakdownText(trades: List<Trade>): String {
         if (trades.isEmpty()) return "No data"
         val grouped = trades.groupBy { it.session }

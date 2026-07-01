@@ -8,11 +8,16 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.UUID
 
-// Utility per salvare immagini in memoria interna.
-// In questo modo il trade conserva un percorso stabile locale.
+/*
+ * Utility per salvare immagini nella memoria interna dell'app.
+ * Il file resta privato all'app e il trade può salvare un path locale
+ */
 object ImageStorageHelper {
 
-    // Salva un Bitmap (ad esempio dalla fotocamera preview) in memoria interna.
+    /*
+     * Salva un Bitmap in un file JPEG interno.
+     * UUID evita nomi duplicati tra immagini diverse.
+     */
     fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap): String {
         val fileName = "trade_${UUID.randomUUID()}.jpg"
         val file = File(context.filesDir, fileName)
@@ -25,7 +30,10 @@ object ImageStorageHelper {
         return file.absolutePath
     }
 
-    // Copia un'immagine scelta dalla galleria in memoria interna.
+    /*
+     * Copia in memoria interna un'immagine scelta tramite Uri.
+     * contentResolver permette di leggere risorse fornite da galleria o altri
+     */
     fun copyUriToInternalStorage(context: Context, uri: Uri): String {
         val fileName = "trade_${UUID.randomUUID()}.jpg"
         val file = File(context.filesDir, fileName)
