@@ -19,6 +19,18 @@ object DemoDataSeeder {
         "atjdemo"
     )
 
+    private val demoConfluences = listOf(
+        "Liquidity sweep",
+        "BOS High Timeframe",
+        "OB retracement",
+        "BOS OB",
+        "FVG respected",
+        "FVG inverted",
+        "Equilibrium",
+        "SMT",
+        "75% closure"
+    )
+
     private fun buildDemoKey(userId: Long): String {
         return "demo_loaded_user_$userId"
     }
@@ -56,13 +68,6 @@ object DemoDataSeeder {
             it.source.equals("demo", ignoreCase = true)
         }
 
-        /*
-         * Regola corretta:
-         *
-         * Se il profilo è demo, il mese demo deve esistere davvero nel database.
-         * Non basta fidarsi delle SharedPreferences, perché una migration può resettare
-         * il database ma lasciare le prefs salvate.
-         */
         if (existingDemoTrades.isNotEmpty()) {
             context.getSharedPreferences(DEMO_PREFS_NAME, Context.MODE_PRIVATE)
                 .edit()
@@ -105,7 +110,7 @@ object DemoDataSeeder {
                 type = "Buy",
                 direction = "Long",
                 result = "Win",
-                setupName = "Liquidity sweep + London continuation",
+                setupName = "Liquidity sweep + bullish displacement",
                 baseEntry = 18420.0,
                 pointsMove = 72.0,
                 stopDistance = 32.0
@@ -115,7 +120,7 @@ object DemoDataSeeder {
                 type = "Sell",
                 direction = "Short",
                 result = "Loss",
-                setupName = "NY reversal attempt failed",
+                setupName = "Failed bearish continuation after sweep",
                 baseEntry = 18580.0,
                 pointsMove = -38.0,
                 stopDistance = 34.0
@@ -125,7 +130,7 @@ object DemoDataSeeder {
                 type = "Buy",
                 direction = "Long",
                 result = "Win",
-                setupName = "Break and retest on London high",
+                setupName = "OB retracement with FVG respected",
                 baseEntry = 5325.0,
                 pointsMove = 24.0,
                 stopDistance = 11.0
@@ -135,7 +140,7 @@ object DemoDataSeeder {
                 type = "Sell",
                 direction = "Short",
                 result = "Loss",
-                setupName = "Counter-trend short invalidated",
+                setupName = "FVG inverted but confirmation was weak",
                 baseEntry = 5350.0,
                 pointsMove = -13.0,
                 stopDistance = 10.0
@@ -253,7 +258,7 @@ object DemoDataSeeder {
                 pnlPercent = round2(pnlPercent),
                 notes = buildDemoNotes(template, isWin),
                 imagePath = null,
-                strategyName = "Liquidity + Session Bias",
+                strategyName = "Liquidity ICT Strategy",
                 checkedConfluences = checkedConfluences,
                 confluenceScore = confluenceScore
             )
@@ -328,10 +333,10 @@ object DemoDataSeeder {
             accountValue = round2(accountValue),
             pnlAmount = 0.0,
             pnlPercent = 0.0,
-            notes = "Open demo trade. Waiting for NY continuation confirmation.",
+            notes = "Open demo trade based on Liquidity ICT Strategy. Waiting for continuation after liquidity sweep and BOS High Timeframe confirmation.",
             imagePath = null,
-            strategyName = "Liquidity + Session Bias",
-            checkedConfluences = "Session bias, Liquidity sweep, Clean invalidation",
+            strategyName = "Liquidity ICT Strategy",
+            checkedConfluences = "Liquidity sweep, BOS High Timeframe, OB retracement, FVG respected, Equilibrium",
             confluenceScore = 75
         )
     }
@@ -376,38 +381,28 @@ object DemoDataSeeder {
             accountValue = round2(accountValue),
             pnlAmount = 0.0,
             pnlPercent = 0.0,
-            notes = "Break-even trade. Good idea, but price did not expand after entry.",
+            notes = "Break-even demo trade. Good idea based on SMT and FVG respected, but price did not expand enough after entry.",
             imagePath = null,
-            strategyName = "Liquidity + Session Bias",
-            checkedConfluences = "Market structure, Session level",
+            strategyName = "Liquidity ICT Strategy",
+            checkedConfluences = "Liquidity sweep, SMT, FVG respected, Equilibrium",
             confluenceScore = 58
         )
     }
 
     private fun buildCheckedConfluences(index: Int): String {
-        val options = listOf(
-            "Session bias",
-            "Liquidity sweep",
-            "Break of structure",
-            "Fair value gap",
-            "Clean invalidation",
-            "RR above 1.5",
-            "No trade into news",
-            "Entry after confirmation"
-        )
+        val count = 4 + (index % 4)
 
-        val count = 3 + (index % 4)
-
-        return options.shuffled()
+        return demoConfluences
+            .shuffled()
             .take(count)
             .joinToString(", ")
     }
 
     private fun buildDemoNotes(template: DemoTemplate, isWin: Boolean): String {
         return if (isWin) {
-            "Demo setup: ${template.setupName}. Entry followed the planned bias. Good patience before execution."
+            "Demo setup: ${template.setupName}. Execution followed Liquidity ICT Strategy. Main confirmations: liquidity sweep, structure confirmation and fair value gap reaction."
         } else {
-            "Demo setup: ${template.setupName}. Loss accepted according to plan. Main review point: wait for stronger confirmation."
+            "Demo setup: ${template.setupName}. Loss accepted according to plan. Main review point: wait for stronger confirmation before entering after liquidity sweep."
         }
     }
 

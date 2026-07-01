@@ -1,17 +1,20 @@
 package com.example.atj
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.atj.data.AppDatabase
 import com.example.atj.model.Trade
 import com.example.atj.utils.DemoDataSeeder
+import com.example.atj.utils.DemoStrategySeeder
 import com.example.atj.utils.JsonSimulationSamples
 import com.example.atj.utils.NotificationHelper
 import com.example.atj.utils.SessionManager
@@ -22,16 +25,10 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var toggleAddMenuButton: MaterialButton
-    private lateinit var addTradeButton: MaterialButton
-    private lateinit var simulateTradeButton: MaterialButton
+    private lateinit var database: AppDatabase
 
-    private lateinit var openStrategyButton: MaterialButton
-    private lateinit var openAnalyticsButton: MaterialButton
-    private lateinit var openHistoryButton: MaterialButton
-    private lateinit var logoutButton: MaterialButton
-
-    private lateinit var addTradeMenuContainer: View
+    private var currentUserId: Long = -1L
+    private var username: String = ""
 
     private lateinit var welcomeTitleText: TextView
     private lateinit var welcomeSubtitleText: TextView
@@ -45,166 +42,119 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sourceValueText: TextView
     private lateinit var sourceLabelText: TextView
 
-    private lateinit var database: AppDatabase
+    private lateinit var toggleAddMenuButton: MaterialButton
+    private lateinit var addTradeButton: MaterialButton
+    private lateinit var simulateTradeButton: MaterialButton
+    private lateinit var openStrategyButton: MaterialButton
+    private lateinit var openAnalyticsButton: MaterialButton
+    private lateinit var openHistoryButton: MaterialButton
+    private lateinit var logoutButton: MaterialButton
 
-    private var currentUserId: Long = -1L
-    private var currentUsername: String = ""
-    private var isAddMenuVisible: Boolean = false
+    private lateinit var addTradeMenuContainer: View
 
-    private val notificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                NotificationHelper.createNotificationChannel(this)
-                NotificationHelper.scheduleAllSessionNotifications(this)
-            }
-        }
+    private var isAddMenuVisible = false
 
     private val addTradeLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data ?: return@registerForActivityResult
+            if (result.resultCode != RESULT_OK) return@registerForActivityResult
 
-                val asset = data.getStringExtra("asset") ?: return@registerForActivityResult
-                val type = data.getStringExtra("type") ?: return@registerForActivityResult
-                val direction = data.getStringExtra("direction") ?: ""
-                val date = data.getStringExtra("date") ?: return@registerForActivityResult
-                val session = data.getStringExtra("session") ?: "Unknown"
-                val resultValue = data.getStringExtra("result") ?: "Open"
-                val notes = data.getStringExtra("notes") ?: ""
+            val data = result.data ?: return@registerForActivityResult
 
-                val imagePath = data.getStringExtra("imagePath")
-                val strategyName = data.getStringExtra("strategyName") ?: ""
-                val checkedConfluences = data.getStringExtra("checkedConfluences") ?: ""
-                val confluenceScore = data.getIntExtra("confluenceScore", 0)
-                val locationText = data.getStringExtra("locationText") ?: "Unknown"
+            val trade = Trade(
+                userId = currentUserId,
+                source = "manual",
+                externalId = "",
+                asset = data.getStringExtra("asset") ?: "",
+                type = data.getStringExtra("type") ?: "",
+                direction = data.getStringExtra("direction") ?: "",
+                result = data.getStringExtra("result") ?: "Open",
+                date = data.getStringExtra("date") ?: "",
+                session = data.getStringExtra("session") ?: "Unknown",
+                locationText = data.getStringExtra("locationText") ?: "Unknown",
+                entryPrice = data.getDoubleExtra("entryPrice", 0.0),
+                exitPrice = data.getDoubleExtra("exitPrice", 0.0),
+                stopLoss = data.getDoubleExtra("stopLoss", 0.0),
+                takeProfit = data.getDoubleExtra("takeProfit", 0.0),
+                rr = data.getDoubleExtra("rr", 0.0),
+                positionValue = data.getDoubleExtra("positionValue", 0.0),
+                positionPercentOfAccount = data.getDoubleExtra("positionPercentOfAccount", 0.0),
+                accountValue = data.getDoubleExtra("accountValue", 0.0),
+                pnlAmount = data.getDoubleExtra("pnlAmount", 0.0),
+                pnlPercent = data.getDoubleExtra("pnlPercent", 0.0),
+                notes = data.getStringExtra("notes") ?: "",
+                imagePath = data.getStringExtra("imagePath"),
+                strategyName = data.getStringExtra("strategyName") ?: "",
+                checkedConfluences = data.getStringExtra("checkedConfluences") ?: "",
+                confluenceScore = data.getIntExtra("confluenceScore", 0)
+            )
 
-                val entryPrice = data.getDoubleExtra("entryPrice", 0.0)
-                val exitPrice = data.getDoubleExtra("exitPrice", 0.0)
-                val stopLoss = data.getDoubleExtra("stopLoss", 0.0)
-                val takeProfit = data.getDoubleExtra("takeProfit", 0.0)
-                val rr = data.getDoubleExtra("rr", 0.0)
-                val positionValue = data.getDoubleExtra("positionValue", 0.0)
-                val positionPercentOfAccount = data.getDoubleExtra("positionPercentOfAccount", 0.0)
-                val accountValue = data.getDoubleExtra("accountValue", 0.0)
-                val pnlAmount = data.getDoubleExtra("pnlAmount", 0.0)
-                val pnlPercent = data.getDoubleExtra("pnlPercent", 0.0)
+            val normalizedTrade = TradeStateHelper.normalizeTrade(trade)
+            database.tradeDao().insertTrade(normalizedTrade)
 
-                val trade = Trade(
-                    userId = currentUserId,
-                    source = "manual",
-                    asset = asset,
-                    type = type,
-                    direction = direction,
-                    result = resultValue.ifBlank { "Open" },
-                    date = date,
-                    session = session.ifBlank { "Unknown" },
-                    locationText = locationText.ifBlank { "Unknown" },
-                    entryPrice = entryPrice,
-                    exitPrice = exitPrice,
-                    stopLoss = stopLoss,
-                    takeProfit = takeProfit,
-                    rr = rr,
-                    positionValue = positionValue,
-                    positionPercentOfAccount = positionPercentOfAccount,
-                    accountValue = accountValue,
-                    pnlAmount = pnlAmount,
-                    pnlPercent = pnlPercent,
-                    notes = notes,
-                    imagePath = imagePath,
-                    strategyName = strategyName,
-                    checkedConfluences = checkedConfluences,
-                    confluenceScore = confluenceScore
-                )
+            NotificationHelper.showTradeCreatedNotification(
+                context = this,
+                asset = normalizedTrade.asset,
+                type = normalizedTrade.type,
+                source = normalizedTrade.source
+            )
 
-                val normalizedTrade = TradeStateHelper.normalizeTrade(trade)
+            hideAddMenu()
+            updateDashboardStats()
 
-                database.tradeDao().insertTrade(normalizedTrade)
-                refreshDashboard()
-                hideAddMenu()
+            Toast.makeText(this, "Trade saved", Toast.LENGTH_SHORT).show()
+        }
 
-                NotificationHelper.showTradeCreatedNotification(
-                    context = this,
-                    asset = normalizedTrade.asset,
-                    type = normalizedTrade.type,
-                    source = normalizedTrade.source
-                )
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted) {
+                Toast.makeText(this, "Notifications disabled", Toast.LENGTH_SHORT).show()
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         database = AppDatabase.getDatabase(this)
 
         currentUserId = SessionManager.getLoggedInUserId(this)
-        currentUsername = SessionManager.getLoggedInUsername(this)
+        username = SessionManager.getLoggedInUsername(this)
 
         if (currentUserId == -1L) {
             openLoginAndClose()
             return
         }
 
-        DemoDataSeeder.prepareDemoDataForUser(
-            context = this,
-            database = database,
-            userId = currentUserId,
-            username = currentUsername
-        )
+        prepareDemoContentIfNeeded()
 
-        setupNotifications()
+        setContentView(R.layout.activity_main)
+
         bindViews()
+        setupNotifications()
         setupClickListeners()
-        refreshDashboard()
+        updateDashboardStats()
     }
 
     override fun onResume() {
         super.onResume()
 
-        currentUserId = SessionManager.getLoggedInUserId(this)
-        currentUsername = SessionManager.getLoggedInUsername(this)
+        if (::database.isInitialized) {
+            currentUserId = SessionManager.getLoggedInUserId(this)
+            username = SessionManager.getLoggedInUsername(this)
 
-        if (currentUserId == -1L) {
-            openLoginAndClose()
-            return
-        }
-
-        DemoDataSeeder.prepareDemoDataForUser(
-            context = this,
-            database = database,
-            userId = currentUserId,
-            username = currentUsername
-        )
-
-        refreshDashboard()
-    }
-
-    private fun setupNotifications() {
-        NotificationHelper.createNotificationChannel(this)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (!NotificationHelper.hasNotificationPermission(this)) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                NotificationHelper.scheduleAllSessionNotifications(this)
+            if (currentUserId == -1L) {
+                openLoginAndClose()
+                return
             }
-        } else {
-            NotificationHelper.scheduleAllSessionNotifications(this)
+
+            prepareDemoContentIfNeeded()
+
+            if (::welcomeTitleText.isInitialized) {
+                updateDashboardStats()
+            }
         }
     }
 
     private fun bindViews() {
-        toggleAddMenuButton = findViewById(R.id.toggleAddMenuButton)
-        addTradeButton = findViewById(R.id.addTradeButton)
-        simulateTradeButton = findViewById(R.id.simulateTradeButton)
-
-        openStrategyButton = findViewById(R.id.openStrategyButton)
-        openAnalyticsButton = findViewById(R.id.openAnalyticsButton)
-        openHistoryButton = findViewById(R.id.openHistoryButton)
-        logoutButton = findViewById(R.id.logoutButton)
-
-        addTradeMenuContainer = findViewById(R.id.addTradeMenuContainer)
-
         welcomeTitleText = findViewById(R.id.welcomeTitleText)
         welcomeSubtitleText = findViewById(R.id.welcomeSubtitleText)
 
@@ -216,6 +166,34 @@ class MainActivity : AppCompatActivity() {
 
         sourceValueText = findViewById(R.id.sourceValueText)
         sourceLabelText = findViewById(R.id.sourceLabelText)
+
+        toggleAddMenuButton = findViewById(R.id.toggleAddMenuButton)
+        addTradeButton = findViewById(R.id.addTradeButton)
+        simulateTradeButton = findViewById(R.id.simulateTradeButton)
+
+        openStrategyButton = findViewById(R.id.openStrategyButton)
+        openAnalyticsButton = findViewById(R.id.openAnalyticsButton)
+        openHistoryButton = findViewById(R.id.openHistoryButton)
+
+        logoutButton = findViewById(R.id.logoutButton)
+
+        addTradeMenuContainer = findViewById(R.id.addTradeMenuContainer)
+    }
+
+    private fun setupNotifications() {
+        NotificationHelper.createNotificationChannel(this)
+        NotificationHelper.scheduleAllSessionNotifications(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permissionGranted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!permissionGranted) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -230,7 +208,6 @@ class MainActivity : AppCompatActivity() {
 
         simulateTradeButton.setOnClickListener {
             simulateTradeEvent()
-            hideAddMenu()
         }
 
         openStrategyButton.setOnClickListener {
@@ -251,106 +228,97 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun refreshDashboard() {
-        val allTrades = database.tradeDao().getTradesByUserId(currentUserId)
-        updateDashboardStats(allTrades)
-    }
-
-    private fun updateDashboardStats(trades: List<Trade>) {
-        val normalizedTrades = trades.map { TradeStateHelper.normalizeTrade(it) }
-
-        val totalTrades = normalizedTrades.size
-
-        val closedTrades = normalizedTrades.filter {
-            TradeStateHelper.isClosed(it)
-        }
-
-        val openTradesCount = normalizedTrades.count {
-            TradeStateHelper.isOpen(it)
-        }
-
-        val wins = closedTrades.count {
-            TradeStateHelper.isWin(it)
-        }
-
-        val winRate = if (closedTrades.isNotEmpty()) {
-            ((wins * 100.0) / closedTrades.size).toInt()
-        } else {
-            0
-        }
-
-        val manualCount = normalizedTrades.count {
-            it.source.equals("manual", ignoreCase = true)
-        }
-
-        val jsonCount = normalizedTrades.count {
-            it.source.equals("json", ignoreCase = true)
-        }
-
-        val demoCount = normalizedTrades.count {
-            it.source.equals("demo", ignoreCase = true)
-        }
-
-        val latestTrade = normalizedTrades.firstOrNull()
-        val latestAccountValue = latestTrade?.accountValue ?: 0.0
-        val displayName = if (currentUsername.isNotBlank()) currentUsername else "Trader"
-        val accountText = String.format(Locale.getDefault(), "%.2f", latestAccountValue)
-
-        welcomeTitleText.text = if (DemoDataSeeder.isDemoProfile(currentUsername)) {
-            "Demo profile, $displayName"
-        } else {
-            "Welcome, $displayName"
-        }
-
-        welcomeSubtitleText.text = buildWelcomeSubtitle(
-            totalTrades = totalTrades,
-            closedTrades = closedTrades.size,
-            openTrades = openTradesCount,
-            accountText = accountText,
-            latestTrade = latestTrade
+    private fun prepareDemoContentIfNeeded() {
+        DemoDataSeeder.prepareDemoDataForUser(
+            context = this,
+            database = database,
+            userId = currentUserId,
+            username = username
         )
 
-        totalTradesValueText.text = totalTrades.toString()
-        totalTradesLabelText.text = "Trades"
-
-        winRateValueText.text = "$winRate%"
-        winRateLabelText.text = if (closedTrades.isNotEmpty()) {
-            "$wins wins"
-        } else {
-            "No closed trades"
+        if (DemoDataSeeder.isDemoProfile(username)) {
+            DemoStrategySeeder.seedDemoStrategy(this)
         }
-
-        sourceValueText.text = "$manualCount | $jsonCount | $demoCount"
-        sourceLabelText.text = "Manual | JSON | Demo"
     }
 
-    private fun buildWelcomeSubtitle(
-        totalTrades: Int,
-        closedTrades: Int,
-        openTrades: Int,
-        accountText: String,
-        latestTrade: Trade?
-    ): String {
-        if (totalTrades == 0) {
-            return "No trades yet. Start by adding your first trade."
-        }
+    private fun updateDashboardStats() {
+        val trades = database.tradeDao()
+            .getTradesByUserId(currentUserId)
+            .map { TradeStateHelper.normalizeTrade(it) }
 
-        val latestText = if (latestTrade != null) {
-            "Latest: ${latestTrade.asset} • ${TradeStateHelper.displayState(latestTrade)} • ${latestTrade.date}"
+        val totalTrades = trades.size
+        val closedTrades = trades.filter { TradeStateHelper.isClosed(it) }
+        val winningTrades = trades.filter { TradeStateHelper.isWin(it) }
+        val openTrades = trades.filter { TradeStateHelper.isOpen(it) }
+
+        val winRate = if (closedTrades.isNotEmpty()) {
+            (winningTrades.size.toDouble() / closedTrades.size.toDouble()) * 100.0
         } else {
-            "Latest: no trade"
+            0.0
         }
 
-        return "$totalTrades trades • $closedTrades closed • $openTrades open • Account $accountText\n$latestText"
+        val manualTrades = trades.count { it.source.equals("manual", ignoreCase = true) }
+        val jsonTrades = trades.count { it.source.equals("json", ignoreCase = true) }
+        val demoTrades = trades.count { it.source.equals("demo", ignoreCase = true) }
+
+        welcomeTitleText.text = "Welcome, $username"
+        welcomeSubtitleText.text = buildWelcomeSubtitle(trades)
+
+        totalTradesValueText.text = totalTrades.toString()
+        totalTradesLabelText.text = if (totalTrades == 1) {
+            "Trade"
+        } else {
+            "Trades"
+        }
+
+        winRateValueText.text = String.format(Locale.getDefault(), "%.0f%%", winRate)
+        winRateLabelText.text = if (closedTrades.isEmpty()) {
+            "No closed trades"
+        } else {
+            "${winningTrades.size}/${closedTrades.size} closed"
+        }
+
+        sourceValueText.text = "$manualTrades | $jsonTrades | $demoTrades"
+        sourceLabelText.text = "Manual | JSON | Demo"
+
+        if (openTrades.isNotEmpty()) {
+            welcomeSubtitleText.append("\nOpen trades: ${openTrades.size}")
+        }
+    }
+
+    private fun buildWelcomeSubtitle(trades: List<Trade>): String {
+        if (trades.isEmpty()) {
+            return if (DemoDataSeeder.isDemoProfile(username)) {
+                "Demo profile ready. Trade history and strategy are prepared."
+            } else {
+                "No trades yet. Start by adding your first trade."
+            }
+        }
+
+        val latestTrade = trades.maxByOrNull { it.id }
+
+        return if (latestTrade != null) {
+            val state = TradeStateHelper.displayState(latestTrade)
+            "Latest trade: ${latestTrade.asset} • $state • ${latestTrade.date}"
+        } else {
+            "Journal ready."
+        }
     }
 
     private fun simulateTradeEvent() {
-        val sampleJson = JsonSimulationSamples.getNextSampleJson(System.currentTimeMillis().toInt())
-        val parsedTrade = TradeEventParser.parseTradeEvent(sampleJson, currentUserId)
-        val normalizedTrade = TradeStateHelper.normalizeTrade(parsedTrade)
+        val json = JsonSimulationSamples.getNextSampleJson(
+            database.tradeDao().getTradesByUserId(currentUserId).size
+        )
 
+        val parsedTrade = TradeEventParser.parseTradeEvent(json, currentUserId)
+
+        if (parsedTrade == null) {
+            Toast.makeText(this, "Invalid JSON trade event", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val normalizedTrade = TradeStateHelper.normalizeTrade(parsedTrade)
         database.tradeDao().insertTrade(normalizedTrade)
-        refreshDashboard()
 
         NotificationHelper.showTradeCreatedNotification(
             context = this,
@@ -358,12 +326,27 @@ class MainActivity : AppCompatActivity() {
             type = normalizedTrade.type,
             source = normalizedTrade.source
         )
+
+        hideAddMenu()
+        updateDashboardStats()
+
+        Toast.makeText(this, "Simulated JSON trade saved", Toast.LENGTH_SHORT).show()
     }
 
     private fun toggleAddMenu() {
         isAddMenuVisible = !isAddMenuVisible
-        addTradeMenuContainer.visibility = if (isAddMenuVisible) View.VISIBLE else View.GONE
-        toggleAddMenuButton.text = if (isAddMenuVisible) "×" else "+"
+
+        addTradeMenuContainer.visibility = if (isAddMenuVisible) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+
+        toggleAddMenuButton.text = if (isAddMenuVisible) {
+            "×"
+        } else {
+            "+"
+        }
     }
 
     private fun hideAddMenu() {
@@ -373,7 +356,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openLoginAndClose() {
-        startActivity(Intent(this, LoginActivity::class.java))
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
         finish()
     }
 }

@@ -3,48 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#030509"
+    android:background="#02040A"
     android:fillViewport="true">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- ORIGINAL TRADING BACKGROUND -->
+        <!-- SOBER MARKET ZIG-ZAG BACKGROUND -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="52dp"
-            android:layout_marginEnd="18dp"
-            android:alpha="0.16"
-            android:text="↗"
+            android:layout_gravity="top"
+            android:layout_marginTop="58dp"
+            android:alpha="0.10"
+            android:gravity="center"
+            android:text="╱╲╱╲╱╲╱"
             android:textColor="#2563EB"
-            android:textSize="160sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:layout_marginStart="-18dp"
-            android:layout_marginBottom="42dp"
-            android:alpha="0.13"
-            android:text="↘"
-            android:textColor="#DC2626"
-            android:textSize="135sp"
+            android:textSize="72sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:alpha="0.08"
+            android:alpha="0.07"
             android:gravity="center"
             android:text="▁▃▂▅▆▇▅▉"
             android:textColor="#3B82F6"
-            android:textSize="46sp"
+            android:textSize="48sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="64dp"
+            android:alpha="0.08"
+            android:gravity="center"
+            android:text="╲╱╲╱╲╱╲"
+            android:textColor="#DC2626"
+            android:textSize="62sp"
+            android:textStyle="bold" />
+
+        <!-- SOFT BLUE GLOW -->
+        <TextView
+            android:layout_width="260dp"
+            android:layout_height="260dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="90dp"
+            android:layout_marginEnd="-90dp"
+            android:alpha="0.06"
+            android:background="#2563EB" />
+
+        <!-- SOFT RED GLOW -->
+        <TextView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="-85dp"
+            android:layout_marginBottom="90dp"
+            android:alpha="0.05"
+            android:background="#DC2626" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,10 +78,10 @@
                 android:layout_width="118dp"
                 android:layout_height="118dp"
                 android:layout_marginBottom="20dp"
-                app:cardBackgroundColor="#0B1120"
+                app:cardBackgroundColor="#CC0B1120"
                 app:cardCornerRadius="34dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#1E293B"
+                app:strokeColor="#334155"
                 app:strokeWidth="1dp">
 
                 <ImageView
@@ -72,13 +92,14 @@
                     android:src="@mipmap/ic_launcher" />
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- LOGIN CARD -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#0B1120"
+                app:cardBackgroundColor="#D90B1120"
                 app:cardCornerRadius="34dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#1E293B"
+                app:strokeColor="#263246"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -101,13 +122,15 @@
                         android:layout_marginTop="6dp"
                         android:text="Access your trading dashboard, review your performance and continue your journal."
                         android:textColor="#94A3B8"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="2dp" />
 
+                    <!-- SMALL MARKET STATUS CARD -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="58dp"
                         android:layout_marginTop="18dp"
-                        android:background="#111C33"
+                        android:background="#99111C33"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingStart="16dp"
@@ -127,7 +150,7 @@
                             android:layout_height="wrap_content"
                             android:text="↗"
                             android:textColor="#60A5FA"
-                            android:textSize="28sp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -136,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="18dp"
-                        android:background="#101826"
+                        android:background="#B3101826"
                         android:hint="Username"
                         android:inputType="text"
                         android:paddingStart="16dp"
@@ -149,7 +172,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="12dp"
-                        android:background="#101826"
+                        android:background="#B3101826"
                         android:hint="Password"
                         android:inputType="textPassword"
                         android:paddingStart="16dp"
@@ -172,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="20dp"
-                        android:background="#1E293B" />
+                        android:background="#334155" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -192,9 +215,9 @@
                         android:textAllCaps="false"
                         android:textColor="#E2E8F0"
                         android:textStyle="bold"
-                        app:backgroundTint="#101826"
+                        app:backgroundTint="#B3101826"
                         app:cornerRadius="20dp"
-                        app:strokeColor="#1E293B"
+                        app:strokeColor="#334155"
                         app:strokeWidth="1dp" />
 
                 </LinearLayout>
